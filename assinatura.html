@@ -41,6 +41,26 @@
     </div>
 
     <div class="sub-content">
+
+      <!-- Fatura pendente / em atraso (escondido por padrão) -->
+      <div class="sub-card pending-invoice" id="pendingInvoiceCard" hidden>
+        <div class="pending-icon"><i data-lucide="alert-circle"></i></div>
+        <div class="pending-body">
+          <h3 id="pendingTitle">Você tem uma fatura pendente</h3>
+          <p id="pendingDesc">Pague antes do vencimento pra manter seu Pro ativo.</p>
+          <div class="pending-meta">
+            <span><strong>Vencimento:</strong> <span id="pendingDue">—</span></span>
+            <span><strong>Valor:</strong> <span id="pendingValue">—</span></span>
+            <span><strong>Forma:</strong> <span id="pendingMethod">—</span></span>
+          </div>
+        </div>
+        <div class="pending-action">
+          <a href="#" id="payNowBtn" target="_blank" rel="noopener" class="gal-btn-primary">
+            <i data-lucide="credit-card"></i> Pagar agora
+          </a>
+        </div>
+      </div>
+
       <div class="sub-card sub-current" id="planCard">
         <div class="sub-plan-info">
           <span class="sub-plan-label">Plano atual</span>
@@ -76,13 +96,6 @@
         <div id="paymentHistory"></div>
       </div>
 
-      <div class="sub-card sub-pending">
-        <i data-lucide="info"></i>
-        <div>
-          <strong>Em desenvolvimento</strong>
-          <p>A integração com Asaas está sendo finalizada. Em breve você poderá assinar, gerenciar e cancelar direto por aqui.</p>
-        </div>
-      </div>
     </div>
   </div>
 </main>

@@ -3143,21 +3143,82 @@ body.light-mode .up-hero h1 {
 }
 .sub-actions svg { width: 13px; height: 13px; }
 
-.sub-pending {
-  display: flex; align-items: flex-start; gap: 14px;
-  background: rgba(255,184,77,0.06);
-  border-color: rgba(255,184,77,0.3);
+/* === Fatura pendente / em atraso === */
+.pending-invoice {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: rgba(255,184,77,0.08);
+  border-color: rgba(255,184,77,0.35);
+  flex-wrap: wrap;
 }
-.sub-pending > svg {
-  width: 22px; height: 22px; color: #ffb84d; flex-shrink: 0; margin-top: 2px;
+.pending-invoice.overdue {
+  background: rgba(255,93,108,0.08);
+  border-color: rgba(255,93,108,0.4);
 }
-.sub-pending > div { display: flex; flex-direction: column; gap: 4px; }
-.sub-pending strong { font-size: 13.5px; color: var(--text); }
-.sub-pending p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+.pending-icon {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  background: rgba(255,184,77,0.18); color: #ffb84d;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.pending-icon svg { width: 22px; height: 22px; }
+.pending-invoice.overdue .pending-icon { background: rgba(255,93,108,0.18); color: var(--danger); }
+.pending-body { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 8px; }
+.pending-body h3 { margin: 0; font-size: 15px; color: var(--text); }
+.pending-body > p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.pending-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--muted); }
+.pending-meta strong { color: var(--text); font-weight: 600; }
+.pending-action { flex-shrink: 0; }
+.pending-action .gal-btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; white-space: nowrap;
+}
+.pending-action svg { width: 14px; height: 14px; }
+
+/* === Histórico de pagamentos === */
+.pay-history-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pay-history-row:last-child { border-bottom: none; }
+.pay-history-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pay-history-main strong { color: var(--text); font-size: 14px; }
+.pay-history-meta { color: var(--muted); font-size: 12px; }
+.pay-history-side { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.pay-history-status {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  padding: 3px 9px; border-radius: 999px;
+  background: var(--panel-2); color: var(--muted);
+  text-transform: uppercase;
+}
+.pay-status-received, .pay-status-confirmed, .pay-status-received_in_cash {
+  background: rgba(54,201,138,0.14); color: var(--ok);
+}
+.pay-status-overdue {
+  background: rgba(255,93,108,0.14); color: var(--danger);
+}
+.pay-status-pending {
+  background: rgba(255,184,77,0.14); color: #ffb84d;
+}
+.pay-status-refunded {
+  background: rgba(167,139,250,0.14); color: #a78bfa;
+}
+.pay-history-link {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; color: var(--muted);
+  text-decoration: none; transition: background .15s, color .15s;
+}
+.pay-history-link:hover { background: var(--panel-2); color: var(--text); }
+.pay-history-link svg { width: 14px; height: 14px; }
 
 @media (max-width: 600px) {
   .sub-content { padding: 0 16px 30px; }
   .sub-current { flex-direction: column; align-items: flex-start; }
+  .pending-invoice { flex-direction: column; }
+  .pending-action { width: 100%; }
+  .pending-action .gal-btn-primary { width: 100%; justify-content: center; }
 }
 
 /* === Chat sessions modal === */
