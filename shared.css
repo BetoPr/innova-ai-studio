@@ -3302,6 +3302,15 @@ body.light-mode .up-hero h1 {
 }
 .delete-confirm-btn:active { transform: translateY(0); }
 .delete-confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; }
+.cancel-sub-status {
+  background: rgba(255, 93, 108, 0.1);
+  border: 1px solid rgba(255, 93, 108, 0.3);
+  color: var(--danger);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+}
 .delete-keep-info {
   background: rgba(54,201,138,0.08);
   border-left: 3px solid var(--ok);
