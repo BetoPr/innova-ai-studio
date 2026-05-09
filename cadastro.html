@@ -55,8 +55,14 @@
 
   <form id="signupForm">
     <div class="field">
-      <label for="name">Nome</label>
-      <input type="text" id="name" required autocomplete="name" maxlength="60">
+      <label for="name">Apelido</label>
+      <input type="text" id="name" required autocomplete="nickname" maxlength="60">
+      <div class="hint">Como vão te chamar. Pode ter espaço, acento e mudar depois.</div>
+    </div>
+    <div class="field">
+      <label for="username">Usuário</label>
+      <input type="text" id="username" required autocomplete="username" maxlength="20" pattern="[a-z0-9_\-]{3,20}">
+      <div class="hint">3-20 caracteres, só letras minúsculas, números, <code>_</code> e <code>-</code>. Não pode ser alterado depois.</div>
     </div>
     <div class="field">
       <label for="email">E-mail</label>
@@ -106,22 +112,42 @@ async function waitForSupabase(timeoutMs = 10000) {
   if (session) location.href = 'index.html';
 })();
 
+const USERNAME_RE = /^[a-z0-9_-]{3,20}$/;
+
 $('signupForm').addEventListener('submit', async e => {
   e.preventDefault();
   const name = $('name').value.trim();
+  const username = $('username').value.trim().toLowerCase();
   const email = $('email').value.trim();
   const password = $('password').value;
   const btn = $('submitBtn');
+
+  if (!USERNAME_RE.test(username)) {
+    showAlert('Usuário inválido. Use 3-20 caracteres: letras minúsculas, números, _ e - (sem espaço/acento).');
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Criando…';
 
   try {
     const supabase = await waitForSupabase();
+
+    // Checa se usuário está livre antes de tentar signUp (evita conta órfã se trigger falhar).
+    const { data: available, error: rpcErr } = await supabase.rpc('is_username_available', { p_username: username });
+    if (rpcErr) throw rpcErr;
+    if (!available) {
+      showAlert('Esse @' + username + ' já está em uso. Escolha outro.');
+      btn.disabled = false;
+      btn.textContent = 'Criar conta';
+      return;
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { display_name: name },
+        data: { display_name: name, username },
         emailRedirectTo: location.origin + location.pathname.replace(/[^/]+$/, '') + 'login.html',
       },
     });
@@ -137,6 +163,8 @@ $('signupForm').addEventListener('submit', async e => {
     let msg = e.message || 'Erro ao criar conta';
     if (msg.includes('already registered')) msg = 'Esse e-mail já tem conta. Vai em "Entrar" ou usa outro.';
     if (msg.includes('weak')) msg = 'Senha fraca. Use pelo menos 6 caracteres com letras e números.';
+    if (msg.includes('profiles_username_format')) msg = 'Usuário inválido (formato).';
+    if (msg.includes('profiles_username_unique')) msg = 'Esse @' + username + ' já foi pego. Tenta outro.';
     showAlert(msg);
     btn.disabled = false;
     btn.textContent = 'Criar conta';
