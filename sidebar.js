@@ -528,22 +528,41 @@
       status.className = 'profile-status ' + (isError ? 'error' : 'ok');
     };
 
+    // Timeout helper — se a request travar, libera UI com erro claro em vez
+    // de ficar pra sempre em "Salvando..." / "Enviando..."
+    function withTimeout(promise, ms, label) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(
+          () => reject(new Error(`${label} demorou demais (${ms/1000}s). Verifica conexão e tenta de novo.`)),
+          ms,
+        )),
+      ]);
+    }
+
     document.getElementById('profilePhotoInput').onchange = async (e) => {
       const file = e.target.files?.[0];
-      if (!file || !window.supabase) return;
+      console.log('[profile-photo] change', { name: file?.name, size: file?.size, hasSupabase: !!window.supabase });
+      if (!file) return;
+      if (!window.supabase) { setStatus('Cliente não pronto. Recarrega a página.', true); return; }
       if (file.size > 2 * 1024 * 1024) { setStatus('Foto maior que 2MB', true); return; }
       setStatus('Enviando foto…');
       try {
         const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
         const path = `${user.id}/avatar-${Date.now()}.${ext}`;
-        // Sobe pro bucket publico user-avatars (pra galeria/detalhe verem)
-        const { error: upErr } = await window.supabase.storage.from('user-avatars')
-          .upload(path, file, { upsert: true, contentType: file.type });
+        const { error: upErr } = await withTimeout(
+          window.supabase.storage.from('user-avatars')
+            .upload(path, file, { upsert: true, contentType: file.type }),
+          20000, 'Upload',
+        );
         if (upErr) throw upErr;
         const { data: pub } = window.supabase.storage.from('user-avatars').getPublicUrl(path);
         const url = pub.publicUrl;
-        // Salva em profiles.avatar_url (publico)
-        await window.supabase.from('profiles').update({ avatar_url: url }).eq('id', user.id);
+        const { error: dbErr } = await withTimeout(
+          window.supabase.from('profiles').update({ avatar_url: url }).eq('id', user.id),
+          10000, 'Salvar URL',
+        );
+        if (dbErr) throw dbErr;
 
         const big = document.getElementById('profileAvatarBig');
         if (big) big.innerHTML = `<img src="${url}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
@@ -553,21 +572,29 @@
         if (topbarAvatar) topbarAvatar.innerHTML = `<img src="${url}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
         setStatus('✓ Foto atualizada');
       } catch (err) {
+        console.error('[profile-photo] erro:', err);
         setStatus('Erro: ' + (err.message || err), true);
       }
     };
 
     document.getElementById('profileSave').onclick = async () => {
       const newName = document.getElementById('profileName').value.trim();
-      if (!newName || !window.supabase) return;
+      console.log('[profile-save] click', { newName, hasSupabase: !!window.supabase });
+      if (!newName) { setStatus('Digite um apelido primeiro', true); return; }
+      if (!window.supabase) { setStatus('Cliente não pronto. Recarrega a página.', true); return; }
       setStatus('Salvando…');
       try {
-        const { error } = await window.supabase.auth.updateUser({ data: { display_name: newName } });
+        const { data, error } = await withTimeout(
+          window.supabase.auth.updateUser({ data: { display_name: newName } }),
+          10000, 'Salvar nome',
+        );
+        console.log('[profile-save] resultado:', { data, error });
         if (error) throw error;
         const t = document.getElementById('accountTitle');
         if (t) t.textContent = newName;
         setStatus('✓ Salvo');
       } catch (err) {
+        console.error('[profile-save] erro:', err);
         setStatus('Erro: ' + (err.message || err), true);
       }
     };
