@@ -15,8 +15,10 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
 });
 
-// Expõe globalmente pra scripts não-módulos
+// Expõe globalmente pra scripts não-módulos (sidebar.js etc)
 window.supabase = supabase;
+window.SUPABASE_URL = SUPABASE_URL;
+window.SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
 
 // Helpers públicos
 window.innovaAuth = {

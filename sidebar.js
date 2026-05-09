@@ -181,13 +181,6 @@
           <div class="sub">Clique pra alternar</div>
         </span>
       </button>
-      <button class="footer-item" id="accountBtn" type="button">
-        <span class="icon-circle user-avatar" id="accountAvatar">?</span>
-        <span class="info">
-          <div class="title" id="accountTitle">Entrar</div>
-          <div class="sub" id="accountSub">Sincronizar histórico</div>
-        </span>
-      </button>
     </div>
   `;
 
@@ -456,6 +449,19 @@
             <button class="profile-btn-logout" id="profileLogout">Sair da conta</button>
           </div>
           <div class="profile-status" id="profileStatus"></div>
+
+          <div class="profile-danger-zone">
+            <div class="profile-danger-warn">
+              <i data-lucide="alert-triangle"></i>
+              <div>
+                <strong>Apagar minha conta</strong>
+                <p>Remove permanentemente seus dados pessoais, curtidas, favoritos e assinatura. Prompts publicados na galeria continuam visíveis como <strong>@conta-apagada</strong>. <strong>Ação irrevogável.</strong></p>
+              </div>
+            </div>
+            <button class="profile-btn-delete" id="profileDeleteAccount" type="button">
+              <i data-lucide="trash-2"></i> Apagar minha conta
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -556,6 +562,88 @@
 
     document.getElementById('profileLogout').onclick = async () => {
       await window.innovaAuth?.signOut();
+    };
+
+    // === Apagar conta ===
+    document.getElementById('profileDeleteAccount').onclick = () => {
+      modal.style.display = 'none';
+      showDeleteAccountModal(user, () => { modal.style.display = ''; });
+    };
+  }
+
+  function showDeleteAccountModal(user, onCancel) {
+    let dm = document.getElementById('profileDeleteModal');
+    if (dm) dm.remove();
+    dm = document.createElement('div');
+    dm.id = 'profileDeleteModal';
+    dm.className = 'delete-modal';
+    dm.innerHTML = `
+      <div class="delete-modal-content">
+        <h2><i data-lucide="alert-triangle"></i> Apagar minha conta</h2>
+        <p>Esta ação é <strong>irrevogável</strong>. Vai apagar:</p>
+        <ul class="delete-list">
+          <li>Sua conta, perfil e dados pessoais</li>
+          <li>Curtidas, favoritos e configurações</li>
+          <li>Sua assinatura Pro (sem reembolso do ciclo atual)</li>
+        </ul>
+        <p class="delete-keep-info">Os prompts que você publicou continuam visíveis na galeria como <strong>@conta-apagada</strong>.</p>
+        <label class="delete-confirm-label">
+          Pra confirmar, digite <strong>${user.email}</strong>:
+        </label>
+        <input type="email" id="profileDeleteInput" placeholder="seu@email.com" autocomplete="off">
+        <div class="delete-modal-actions">
+          <button type="button" class="gal-btn-ghost" id="profileDeleteAbort">Cancelar</button>
+          <button type="button" class="gal-btn-primary delete-confirm-btn" id="profileDeleteConfirm" disabled>
+            <i data-lucide="trash-2"></i> Apagar permanentemente
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(dm);
+    if (window.lucide) lucide.createIcons();
+
+    const input = document.getElementById('profileDeleteInput');
+    const confirmBtn = document.getElementById('profileDeleteConfirm');
+    const abortBtn = document.getElementById('profileDeleteAbort');
+
+    setTimeout(() => input.focus(), 50);
+
+    input.addEventListener('input', () => {
+      confirmBtn.disabled = input.value.trim().toLowerCase() !== user.email.toLowerCase();
+    });
+
+    function close() {
+      dm.remove();
+      onCancel?.();
+    }
+
+    abortBtn.onclick = close;
+    dm.onclick = (e) => { if (e.target === dm) close(); };
+
+    confirmBtn.onclick = async () => {
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Apagando…';
+      try {
+        const { data: { session } } = await window.supabase.auth.getSession();
+        if (!session) throw new Error('Sessão expirada');
+        const res = await fetch(`${window.SUPABASE_URL}/functions/v1/delete-account`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+            'apikey': window.SUPABASE_ANON_KEY,
+          },
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
+        await window.supabase.auth.signOut();
+        location.href = 'index.html';
+      } catch (err) {
+        alert('Erro: ' + (err.message || err));
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = '<i data-lucide="trash-2"></i> Apagar permanentemente';
+        if (window.lucide) lucide.createIcons();
+      }
     };
   }
 })();
