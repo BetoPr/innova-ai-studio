@@ -583,7 +583,7 @@
         <p>Esta ação é <strong>irrevogável</strong>. Vai apagar:</p>
         <ul class="delete-list">
           <li>Sua conta, perfil e dados pessoais</li>
-          <li>Curtidas, favoritos e configurações</li>
+          <li>Favoritos e configurações</li>
           <li>Sua assinatura Pro (sem reembolso do ciclo atual)</li>
         </ul>
         <p class="delete-keep-info">Os prompts que você publicou continuam visíveis na galeria como <strong>@conta-apagada</strong>.</p>

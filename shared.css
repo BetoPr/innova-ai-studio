@@ -3254,12 +3254,27 @@ body.light-mode .up-hero h1 {
 .delete-list li { margin-bottom: 2px; }
 .delete-confirm-label { font-size: 13px; color: var(--text); }
 .delete-confirm-label strong { color: var(--danger); user-select: text; }
-#deleteConfirmInput {
-  padding: 10px 12px; border-radius: 8px;
-  background: var(--panel-2); border: 1px solid var(--border);
-  color: var(--text); font-size: 14px; font-family: inherit;
+.delete-modal input[type="email"] {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--panel-2);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  font-size: 15px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color .15s, background .15s;
 }
-#deleteConfirmInput:focus { outline: none; border-color: var(--danger); }
+.delete-modal input[type="email"]:focus {
+  outline: none;
+  border-color: var(--danger);
+  background: var(--panel);
+}
+.delete-modal input[type="email"]::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
+}
 .delete-modal-actions {
   display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;
 }
