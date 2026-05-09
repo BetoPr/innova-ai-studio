@@ -455,7 +455,7 @@
               <i data-lucide="alert-triangle"></i>
               <div>
                 <strong>Apagar minha conta</strong>
-                <p>Remove permanentemente seus dados pessoais, curtidas, favoritos e assinatura. Prompts publicados na galeria continuam visíveis como <strong>@conta-apagada</strong>. <strong>Ação irrevogável.</strong></p>
+                <p>Remove permanentemente seus dados pessoais, favoritos e assinatura. Prompts publicados na galeria continuam visíveis.</p>
               </div>
             </div>
             <button class="profile-btn-delete" id="profileDeleteAccount" type="button">
