@@ -62,15 +62,23 @@ serve(async (req) => {
       case 'PAYMENT_RECEIVED':
       case 'PAYMENT_CONFIRMED': {
         if (!userId || !subId) break;
-        const nextDue = payment?.dueDate || payment?.nextDueDate;
-        const proUntil = nextDue
-          ? new Date(new Date(nextDue).getTime() + 3 * 24 * 3600 * 1000).toISOString()
-          : new Date(Date.now() + 33 * 24 * 3600 * 1000).toISOString();
+        // Pro vale ate 33 dias depois do pagamento (30 dias do ciclo + 3 de
+        // graca). Asaas vai criar a proxima fatura e disparar PAYMENT_CREATED
+        // que atualiza next_due_date com o valor exato.
+        const proUntil = new Date(Date.now() + 33 * 24 * 3600 * 1000).toISOString();
         await admin.from('profiles').update({ plan: 'pro', pro_until: proUntil }).eq('id', userId);
-        await admin.from('subscriptions').update({
-          status: 'active',
-          next_due_date: nextDue || null,
-        }).eq('asaas_subscription_id', subId);
+        await admin.from('subscriptions').update({ status: 'active' })
+          .eq('asaas_subscription_id', subId);
+        break;
+      }
+      case 'PAYMENT_CREATED': {
+        // Asaas criou nova cobranca (geralmente a do proximo ciclo, logo apos
+        // PAYMENT_RECEIVED). Atualiza next_due_date com a data correta.
+        if (subId && payment?.dueDate) {
+          await admin.from('subscriptions').update({
+            next_due_date: payment.dueDate,
+          }).eq('asaas_subscription_id', subId);
+        }
         break;
       }
       case 'PAYMENT_OVERDUE': {
