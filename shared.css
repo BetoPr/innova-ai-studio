@@ -3065,7 +3065,24 @@ body.light-mode .up-hero h1 {
 .up-checkout-summary span { font-size: 13px; color: var(--muted); font-weight: 600; }
 .up-checkout-summary strong { font-size: 16px; color: var(--text); }
 .up-checkout-form .gal-modal-actions { margin-top: 6px; }
-.up-checkout-form .gal-btn-primary { width: 100%; padding: 12px; }
+.up-checkout-form .gal-btn-primary {
+  width: 100%;
+  padding: 13px 18px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+  transition: box-shadow .15s, transform .1s;
+}
+.up-checkout-form .gal-btn-primary:hover {
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+  transform: translateY(-1px);
+}
+.up-checkout-form .gal-btn-primary:active { transform: translateY(0); }
+.up-checkout-form .gal-btn-primary svg { width: 16px; height: 16px; }
 .up-checkout-status { font-size: 12px; min-height: 16px; text-align: center; color: var(--muted); }
 .up-checkout-status.error { color: var(--danger); }
 .up-checkout-status.ok { color: var(--ok); }
