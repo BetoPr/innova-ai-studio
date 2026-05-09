@@ -3290,9 +3290,18 @@ body.light-mode .up-hero h1 {
   display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;
 }
 .delete-confirm-btn {
-  background: var(--danger) !important; color: white !important;
+  background: var(--danger) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(255, 93, 108, 0.25) !important;
+  transition: box-shadow .15s, transform .1s, filter .15s;
 }
-.delete-confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.delete-confirm-btn:hover {
+  box-shadow: 0 4px 14px rgba(255, 93, 108, 0.4) !important;
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+.delete-confirm-btn:active { transform: translateY(0); }
+.delete-confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; }
 .delete-keep-info {
   background: rgba(54,201,138,0.08);
   border-left: 3px solid var(--ok);
