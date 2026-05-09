@@ -101,12 +101,27 @@ serve(async (req) => {
       next_due_date: tomorrow,
     });
 
-    // 4) Pega primeira cobrança pra retornar invoiceUrl
-    const paysRes = await fetch(`${ASAAS_API_URL}/subscriptions/${sub.id}/payments`, {
-      headers: { 'access_token': ASAAS_API_KEY },
-    });
-    const pays = await paysRes.json();
-    const invoiceUrl = pays?.data?.[0]?.invoiceUrl || null;
+    // 4) Pega primeira cobrança pra retornar invoiceUrl. Asaas leva uns ms
+    // pra gerar o pagamento, então tentamos até 4x com 500ms de gap.
+    let invoiceUrl: string | null = null;
+    let lastPays: any = null;
+    for (let i = 0; i < 4; i++) {
+      const paysRes = await fetch(`${ASAAS_API_URL}/subscriptions/${sub.id}/payments`, {
+        headers: { 'access_token': ASAAS_API_KEY },
+      });
+      lastPays = await paysRes.json();
+      invoiceUrl = lastPays?.data?.[0]?.invoiceUrl || null;
+      if (invoiceUrl) break;
+      if (i < 3) await new Promise((r) => setTimeout(r, 500));
+    }
+
+    if (!invoiceUrl) {
+      console.error('invoiceUrl não veio em 4 tentativas', JSON.stringify(lastPays));
+      return jsonRes({
+        error: 'Cobrança gerada mas o link ainda não está disponível. Recarregue a página em alguns segundos e veja em "Minha assinatura".',
+        subscriptionId: sub.id,
+      }, 502);
+    }
 
     return jsonRes({ ok: true, invoiceUrl, subscriptionId: sub.id });
   } catch (err) {
