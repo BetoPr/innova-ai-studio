@@ -437,8 +437,12 @@
           </div>
 
           <div class="profile-field">
-            <label>Nome</label>
+            <label>Apelido</label>
             <input type="text" id="profileName" value="${name.replace(/"/g,'&quot;')}" maxlength="60">
+          </div>
+          <div class="profile-field">
+            <label>Usuário</label>
+            <input type="text" id="profileUsername" value="@—" disabled>
           </div>
           <div class="profile-field">
             <label>E-mail</label>
@@ -467,6 +471,14 @@
     `;
     document.body.appendChild(modal);
     if (window.lucide) lucide.createIcons();
+
+    // Carrega username pra exibir no campo Usuário (readonly)
+    window.supabase
+      .from('profiles').select('username').eq('id', user.id).maybeSingle()
+      .then(({ data }) => {
+        const usernameInput = document.getElementById('profileUsername');
+        if (usernameInput) usernameInput.value = data?.username ? `@${data.username}` : '@—';
+      });
 
     let currentAvatar = null;
     loadAvatarUrl(user).then(url => {
@@ -594,7 +606,7 @@
         <div class="delete-modal-actions">
           <button type="button" class="gal-btn-ghost" id="profileDeleteAbort">Cancelar</button>
           <button type="button" class="gal-btn-primary delete-confirm-btn" id="profileDeleteConfirm" disabled>
-            <i data-lucide="trash-2"></i> Apagar permanentemente
+            <i data-lucide="trash-2"></i> Excluir
           </button>
         </div>
       </div>
@@ -641,7 +653,7 @@
       } catch (err) {
         alert('Erro: ' + (err.message || err));
         confirmBtn.disabled = false;
-        confirmBtn.innerHTML = '<i data-lucide="trash-2"></i> Apagar permanentemente';
+        confirmBtn.innerHTML = '<i data-lucide="trash-2"></i> Excluir';
         if (window.lucide) lucide.createIcons();
       }
     };

@@ -3256,25 +3256,19 @@ body.light-mode .up-hero h1 {
 .delete-confirm-label strong { color: var(--danger); user-select: text; }
 .delete-modal input[type="email"] {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 10px;
   background: var(--panel-2);
-  border: 1.5px solid var(--border);
   color: var(--text);
-  font-size: 15px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
   font-family: inherit;
-  box-sizing: border-box;
-  transition: border-color .15s, background .15s;
-}
-.delete-modal input[type="email"]:focus {
   outline: none;
-  border-color: var(--danger);
-  background: var(--panel);
+  box-sizing: border-box;
+  transition: border-color .15s;
 }
-.delete-modal input[type="email"]::placeholder {
-  color: var(--muted);
-  opacity: 0.65;
-}
+.delete-modal input[type="email"]:focus { border-color: var(--accent-2); }
+.delete-modal input[type="email"]::placeholder { color: var(--muted); opacity: 0.6; }
 .delete-modal-actions {
   display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;
 }
