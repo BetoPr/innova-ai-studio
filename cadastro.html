@@ -133,10 +133,23 @@ $('signupForm').addEventListener('submit', async e => {
   try {
     const supabase = await waitForSupabase();
 
-    // Checa se usuário está livre antes de tentar signUp (evita conta órfã se trigger falhar).
-    const { data: available, error: rpcErr } = await supabase.rpc('is_username_available', { p_username: username });
-    if (rpcErr) throw rpcErr;
-    if (!available) {
+    // Checa email + username em paralelo antes de tentar signUp. Evita conta
+    // órfã (se trigger falhar) e dá feedback claro em vez do email silencioso
+    // padrão do Supabase Auth quando o email já existe.
+    const [emailRes, userRes] = await Promise.all([
+      supabase.rpc('is_email_available', { p_email: email }),
+      supabase.rpc('is_username_available', { p_username: username }),
+    ]);
+    if (emailRes.error) throw emailRes.error;
+    if (userRes.error) throw userRes.error;
+
+    if (!emailRes.data) {
+      showAlert('Esse e-mail já tem conta. Vai em "Entrar" ou usa outro.');
+      btn.disabled = false;
+      btn.textContent = 'Criar conta';
+      return;
+    }
+    if (!userRes.data) {
       showAlert('Esse @' + username + ' já está em uso. Escolha outro.');
       btn.disabled = false;
       btn.textContent = 'Criar conta';
