@@ -555,9 +555,7 @@
     };
 
     document.getElementById('profileLogout').onclick = async () => {
-      if (!confirm('Sair da conta?')) return;
       await window.innovaAuth?.signOut();
-      close();
     };
   }
 })();

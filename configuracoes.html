@@ -139,6 +139,42 @@
         <i data-lucide="trash-2"></i> Limpar tudo
       </button>
     </div>
+
+    <div class="cfg-section-title cfg-danger-title">Zona de perigo</div>
+
+    <div class="cfg-card cfg-misc cfg-card-danger">
+      <div>
+        <strong>Apagar minha conta</strong>
+        <p>Remove permanentemente sua conta, perfil, prompts publicados, favoritos e histórico. <strong>Ação irrevogável.</strong></p>
+      </div>
+      <button type="button" class="gal-btn-ghost cfg-danger" id="deleteAccountBtn">
+        <i data-lucide="trash-2"></i> Apagar conta
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal: confirmação de exclusão de conta -->
+  <div class="delete-modal" id="deleteAccountModal" hidden>
+    <div class="delete-modal-content">
+      <h2><i data-lucide="alert-triangle"></i> Apagar minha conta</h2>
+      <p>Esta ação é <strong>irrevogável</strong>. Vai apagar:</p>
+      <ul class="delete-list">
+        <li>Sua conta, perfil e dados pessoais</li>
+        <li>Todos os prompts que você publicou na galeria</li>
+        <li>Curtidas, favoritos e histórico</li>
+        <li>Sua assinatura Pro (sem reembolso do ciclo atual)</li>
+      </ul>
+      <label class="delete-confirm-label">
+        Pra confirmar, digite <strong id="deleteConfirmEmail">seu email</strong>:
+      </label>
+      <input type="email" id="deleteConfirmInput" placeholder="seu@email.com" autocomplete="off">
+      <div class="delete-modal-actions">
+        <button type="button" class="gal-btn-ghost" id="deleteAbortBtn">Cancelar</button>
+        <button type="button" class="gal-btn-primary delete-confirm-btn" id="deleteConfirmBtn" disabled>
+          <i data-lucide="trash-2"></i> Apagar permanentemente
+        </button>
+      </div>
+    </div>
   </div>
 </main>
 
