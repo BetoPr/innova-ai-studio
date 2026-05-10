@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guia & Tutoriais — Innova & AI Studio</title>
+<meta name="description" content="Aprenda a usar o Innova AI Studio: como gerar fotos com IA, configurar APIs, usar as ferramentas, publicar prompts.">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="shared.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<aside class="sidebar"></aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="search-box">
+      <i data-lucide="search"></i>
+      <input type="text" placeholder="Buscar…" id="topSearch">
+      <kbd>Ctrl K</kbd>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" title="Notificações"><i data-lucide="bell"></i></button>
+      <div class="topbar-avatar">A</div>
+    </div>
+  </header>
+
+  <div class="tut-hero">
+    <span class="hero-badge">Aprenda</span>
+    <h1>Guia & Tutoriais</h1>
+    <p>Tudo que você precisa pra dominar o Innova AI Studio. Toque em qualquer card pra abrir o conteúdo completo.</p>
+  </div>
+
+  <div class="tut-grid">
+
+    <button class="tut-card" type="button" data-topic="fotos">
+      <div class="tut-card-icon"><i data-lucide="camera"></i></div>
+      <div class="tut-card-body">
+        <h3>Boas fotos com IA</h3>
+        <p>Composição, prompts e referências que fazem diferença</p>
+        <span class="tut-card-meta"><i data-lucide="lightbulb"></i> 6 dicas · ~4 min</span>
+      </div>
+    </button>
+
+    <button class="tut-card" type="button" data-topic="ferramentas">
+      <div class="tut-card-icon"><i data-lucide="wrench"></i></div>
+      <div class="tut-card-body">
+        <h3>Ferramentas do Studio</h3>
+        <p>Marca d'água, remover fundo, comprimir, converter, redimensionar</p>
+        <span class="tut-card-meta"><i data-lucide="layers"></i> 5 ferramentas · ~5 min</span>
+      </div>
+    </button>
+
+    <button class="tut-card" type="button" data-topic="apis">
+      <div class="tut-card-icon"><i data-lucide="key-round"></i></div>
+      <div class="tut-card-body">
+        <h3>Configurando APIs (BYOK)</h3>
+        <p>Groq grátis, OpenAI, OpenRouter — passo a passo</p>
+        <span class="tut-card-meta"><i data-lucide="zap"></i> 3 provedores · ~6 min</span>
+      </div>
+    </button>
+
+    <button class="tut-card" type="button" data-topic="construtor">
+      <div class="tut-card-icon"><i data-lucide="blocks"></i></div>
+      <div class="tut-card-body">
+        <h3>Construtor de prompts</h3>
+        <p>Crie prompts complexos com blocos visuais</p>
+        <span class="tut-card-meta"><i data-lucide="puzzle"></i> 11 blocos · ~3 min</span>
+      </div>
+    </button>
+
+    <button class="tut-card" type="button" data-topic="chat">
+      <div class="tut-card-icon"><i data-lucide="message-circle"></i></div>
+      <div class="tut-card-body">
+        <h3>Chat IA</h3>
+        <p>Conversar com modelos, refinar prompts, usar histórico</p>
+        <span class="tut-card-meta"><i data-lucide="sparkles"></i> 50+ modelos · ~4 min</span>
+      </div>
+    </button>
+
+    <button class="tut-card" type="button" data-topic="galeria">
+      <div class="tut-card-icon"><i data-lucide="layout-grid"></i></div>
+      <div class="tut-card-body">
+        <h3>Galeria & Compartilhar</h3>
+        <p>Publicar, favoritar, copiar prompts da comunidade</p>
+        <span class="tut-card-meta"><i data-lucide="users"></i> Comunidade · ~3 min</span>
+      </div>
+    </button>
+
+    <button class="tut-card" type="button" data-topic="conta">
+      <div class="tut-card-icon"><i data-lucide="crown"></i></div>
+      <div class="tut-card-body">
+        <h3>Conta & Plano Pro</h3>
+        <p>Assinatura, formas de pagamento, cancelamento</p>
+        <span class="tut-card-meta"><i data-lucide="credit-card"></i> Cobranças · ~3 min</span>
+      </div>
+    </button>
+
+  </div>
+</main>
+
+<!-- Modal de detalhe do tutorial -->
+<div class="tut-modal" id="tutModal" hidden>
+  <div class="tut-modal-card">
+    <button class="tut-modal-close" id="tutModalClose" aria-label="Fechar"><i data-lucide="x"></i></button>
+    <div class="tut-modal-body" id="tutModalBody"></div>
+  </div>
+</div>
+
+<div id="toastHost"></div>
+
+<script src="favicon.js"></script>
+<script type="module" src="supabase-client.js"></script>
+<script src="sidebar.js"></script>
+<script src="lib/tutorial-page.js"></script>
+<script>
+  if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>

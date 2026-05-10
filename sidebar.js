@@ -172,8 +172,16 @@
   });
 
   const isLight = document.body.classList.contains('light-mode');
+  const tutorialActive = path.endsWith('tutorial.html');
   html += `</nav>
     <div class="sidebar-footer">
+      <a href="tutorial.html" class="footer-item ${tutorialActive ? 'active' : ''}" id="tutorialFooterBtn">
+        <span class="icon-circle accent"><i data-lucide="graduation-cap"></i></span>
+        <span class="info">
+          <div class="title" data-i18n="sidebar.tutorial">Guia & Tutoriais</div>
+          <div class="sub" data-i18n="sidebar.tutorialSub">Aprenda a usar tudo</div>
+        </span>
+      </a>
       <button class="footer-item" id="themeToggle">
         <span class="icon-circle"><i data-lucide="${isLight ? 'sun' : 'moon'}"></i></span>
         <span class="info">
