@@ -50,8 +50,58 @@ serve(async (req) => {
       .from('profiles').select('*').eq('id', user.id).maybeSingle();
     if (!profile) return jsonRes({ error: 'profile não encontrado' }, 404);
 
+    // 0) Anti-duplicata: se o user já tem subscription_id no profile,
+    // checa se ainda tá ATIVA no Asaas. Se sim, devolve a fatura pendente
+    // da existente em vez de criar nova (evita cobranças em duplicidade
+    // se o user clicar "Assinar" rapidinho depois de cancelar OU se
+    // showCurrentPlan no front falhar em desabilitar o botão).
+    if (profile.asaas_subscription_id) {
+      const checkRes = await fetch(
+        `${ASAAS_API_URL}/subscriptions/${profile.asaas_subscription_id}`,
+        { headers: { 'access_token': ASAAS_API_KEY } },
+      );
+      if (checkRes.ok) {
+        const existing = await checkRes.json();
+        // Asaas: status pode ser ACTIVE / INACTIVE / EXPIRED
+        if (existing?.status === 'ACTIVE') {
+          // Procura próxima fatura pendente da assinatura existente
+          const paysRes = await fetch(
+            `${ASAAS_API_URL}/subscriptions/${profile.asaas_subscription_id}/payments`,
+            { headers: { 'access_token': ASAAS_API_KEY } },
+          );
+          let invoiceUrl: string | null = null;
+          if (paysRes.ok) {
+            const pays = await paysRes.json();
+            const pending = (pays?.data || []).find((p: any) =>
+              p.status === 'PENDING' || p.status === 'OVERDUE',
+            );
+            invoiceUrl = pending?.invoiceUrl || null;
+          }
+          return jsonRes({
+            ok: true,
+            invoiceUrl,
+            subscriptionId: profile.asaas_subscription_id,
+            existing: true,
+            message: 'Você já tem uma assinatura ativa. Abrindo a fatura atual.',
+          });
+        }
+      }
+    }
+
     // 1) Cria/recupera customer no Asaas
     let asaasCustomerId = profile.asaas_customer_id;
+    // Se o ID existe no banco mas é de outro ambiente (ex: ID sandbox depois
+    // do switch pra produção), cria novo. Sem isso, daria erro no step 2.
+    if (asaasCustomerId) {
+      const customerCheck = await fetch(
+        `${ASAAS_API_URL}/customers/${asaasCustomerId}`,
+        { headers: { 'access_token': ASAAS_API_KEY } },
+      );
+      if (!customerCheck.ok) {
+        console.warn(`customer ${asaasCustomerId} não existe neste ambiente; criando novo`);
+        asaasCustomerId = null;
+      }
+    }
     if (!asaasCustomerId) {
       const customerRes = await fetch(`${ASAAS_API_URL}/customers`, {
         method: 'POST',
