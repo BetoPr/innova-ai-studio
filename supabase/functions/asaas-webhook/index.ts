@@ -16,9 +16,18 @@ const ASAAS_WEBHOOK_TOKEN = Deno.env.get('ASAAS_WEBHOOK_TOKEN')!;
 serve(async (req) => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
-  // Valida token (Asaas envia em "asaas-access-token")
-  const headerToken = req.headers.get('asaas-access-token') || req.headers.get('Asaas-Access-Token');
-  if (!headerToken || headerToken !== ASAAS_WEBHOOK_TOKEN) {
+  // Valida token (Asaas pode enviar em headers diferentes ou query string)
+  const headerToken = (
+    req.headers.get('asaas-access-token') ||
+    req.headers.get('Asaas-Access-Token') ||
+    req.headers.get('access_token') ||
+    req.headers.get('x-asaas-token') ||
+    new URL(req.url).searchParams.get('token') ||
+    ''
+  ).trim();
+  const expected = (ASAAS_WEBHOOK_TOKEN || '').trim();
+  if (!headerToken || headerToken !== expected) {
+    console.warn('[webhook] 401 token mismatch');
     return new Response('Unauthorized', { status: 401 });
   }
 
