@@ -4127,10 +4127,18 @@ body.light-mode .mobile-bottom-nav {
   background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
 }
 
-/* Mostrar apenas em mobile + adicionar padding no main pra não esconder conteúdo */
+/* Mostrar apenas em mobile + esconder sidebar (bottom nav substitui) */
 @media (max-width: 768px) {
   .mobile-bottom-nav { display: flex; }
-  .main { padding-bottom: 100px !important; }
+  .main {
+    padding-bottom: 100px !important;
+    margin-left: 0 !important;       /* sobrescreve o 64px do bloco antigo */
+    width: 100% !important;
+  }
+  .sidebar {
+    display: none !important;        /* esconde totalmente em mobile */
+  }
+  body { --sidebar-w: 0 !important; }
 }
 
 /* Esconder em telas com sidebar aberta full screen (raro) */
