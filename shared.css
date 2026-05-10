@@ -3980,3 +3980,92 @@ body.light-mode .tut-card.tapped {
 .sidebar-footer .footer-item.active .icon-circle.accent {
   background: linear-gradient(135deg, rgba(167, 139, 250, 0.4), rgba(124, 58, 237, 0.25));
 }
+
+/* ========================================
+   MOBILE COMPAT — fixes consolidados
+   ======================================== */
+
+/* Evita scroll horizontal indesejado em qualquer página */
+html, body { overflow-x: hidden; max-width: 100vw; }
+
+@media (max-width: 768px) {
+  /* Topbar — hide login/signup buttons on mobile (sidebar tem CTA) */
+  .topbar-signup, .topbar-login { display: none !important; }
+  .topbar-status { display: none; }
+
+  /* Search box reduz quando topbar tem outras coisas */
+  .search-box { padding: 6px 10px; }
+  .search-box input { font-size: 14px; min-height: 36px; }
+  .search-box kbd { display: none; }
+
+  /* Topbar geral mais compacta */
+  .topbar { padding: 12px 16px; gap: 10px; flex-wrap: wrap; }
+  .topbar-actions { gap: 6px; }
+  .topbar-btn { width: 38px; height: 38px; }
+  .topbar-avatar { width: 34px; height: 34px; font-size: 13px; }
+
+  /* Galeria — força 1 coluna no advanced */
+  .gal-adv-grid { grid-template-columns: 1fr !important; gap: 12px; padding: 12px; }
+
+  /* Botões secundários e chips com tap target maior */
+  .gal-chip,
+  .gal-filter-chip,
+  .gal-btn-ghost,
+  .gal-btn-secondary {
+    min-height: 38px;
+    padding: 8px 14px;
+  }
+
+  /* Inputs de configuração com altura confortável pra digitar */
+  .cfg-input-wrap input,
+  .field input,
+  .up-field input,
+  input[type="email"],
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"] {
+    min-height: 44px;
+    font-size: 16px; /* 16px previne zoom auto do iOS */
+  }
+  textarea { font-size: 16px; }
+
+  /* Marca d'água — card de plano stack vertical */
+  .wm-plan-row { flex-direction: column; gap: 12px; align-items: stretch; }
+  .wm-plan-row > * { width: 100%; }
+
+  /* Cards de planos no upgrade — full width */
+  .up-card { padding: 20px 16px; }
+
+  /* Modais ocupam quase toda a tela */
+  .gal-modal,
+  .delete-modal-content,
+  .up-modal-checkout {
+    max-width: 100% !important;
+    margin: 0;
+    border-radius: 16px;
+  }
+
+  /* Hero/headers menos espaço */
+  .hero-badge { font-size: 10px; padding: 4px 10px; }
+  h1 { font-size: 22px !important; line-height: 1.3; }
+
+  /* Footer da landing — texto centralizado pra evitar overflow */
+  .land-footer { text-align: center; padding: 20px 16px; }
+
+  /* Sidebar full-overlay quando aberta no mobile (já existente, garantindo) */
+  .sidebar-collapsed .sidebar { transform: translateX(-100%); }
+}
+
+/* Telas muito pequenas (iPhone SE 1ª gen, Galaxy S5) */
+@media (max-width: 380px) {
+  .topbar { padding: 10px 12px; }
+  .topbar-btn { width: 36px; height: 36px; }
+  .topbar-avatar { width: 32px; height: 32px; font-size: 12px; }
+  h1 { font-size: 20px !important; }
+  .tut-card { padding: 16px; }
+  .tut-card-icon { width: 44px; height: 44px; }
+  .tut-card-icon svg { width: 22px; height: 22px; }
+  .tut-card-body h3 { font-size: 15px; }
+  .tut-card-body p { font-size: 13px; }
+}
