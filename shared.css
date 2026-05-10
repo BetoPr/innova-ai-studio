@@ -4144,6 +4144,38 @@ body.light-mode .mobile-bottom-nav {
 /* Esconder em telas com sidebar aberta full screen (raro) */
 body.sidebar-open .mobile-bottom-nav { display: none; }
 
+/* === Páginas de auth (login/cadastro) — mobile fullscreen === */
+@media (max-width: 600px) {
+  body:has(.auth-wrap) {
+    padding: 0 !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+  }
+  .auth-wrap {
+    max-width: 100% !important;
+    min-height: 100vh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    padding: 32px 22px !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+  .auth-wrap h1 { font-size: 26px !important; }
+  .auth-wrap .field input {
+    min-height: 48px !important;
+    font-size: 16px !important;  /* evita zoom auto do iOS */
+    padding: 12px 16px !important;
+  }
+  .auth-wrap .submit-btn {
+    min-height: 50px !important;
+    font-size: 15px !important;
+  }
+  .auth-brand .b1, .auth-brand .b2 { font-size: 26px !important; }
+  .auth-brand .b-amp { font-size: 20px !important; }
+}
+
 /* === Cards 2-col em mobile (em vez de 1-col) — mais visual === */
 @media (max-width: 600px) {
   .gal-grid,
