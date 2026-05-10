@@ -195,6 +195,51 @@
   aside.innerHTML = html;
   setupAuthFooter();
 
+  // === Bottom navigation flutuante (mobile only) ===
+  // Renderiza fora da sidebar, fixed no bottom da viewport
+  if (!document.querySelector('.mobile-bottom-nav')) {
+    const isAt = (h) => path.endsWith(h);
+    const nav = document.createElement('nav');
+    nav.className = 'mobile-bottom-nav';
+    nav.innerHTML = `
+      <a href="index.html" class="mbn-item ${isAt('index.html') || path === '/' || path.endsWith('/marca-dagua/') ? 'active' : ''}">
+        <i data-lucide="home"></i>
+        <span>Início</span>
+      </a>
+      <a href="galeria.html" class="mbn-item ${isAt('galeria.html') ? 'active' : ''}">
+        <i data-lucide="layout-grid"></i>
+        <span>Galeria</span>
+      </a>
+      <a href="construtor.html" class="mbn-item mbn-center ${isAt('construtor.html') ? 'active' : ''}">
+        <span class="mbn-fab"><i data-lucide="sparkles"></i></span>
+        <span>Criar</span>
+      </a>
+      <a href="favoritos.html" class="mbn-item ${isAt('favoritos.html') ? 'active' : ''}">
+        <i data-lucide="bookmark"></i>
+        <span>Salvos</span>
+      </a>
+      <a href="#" class="mbn-item" id="mbnProfileBtn">
+        <i data-lucide="user"></i>
+        <span>Perfil</span>
+      </a>
+    `;
+    document.body.appendChild(nav);
+
+    // Botão Perfil abre o profile modal (se logado) ou login
+    nav.querySelector('#mbnProfileBtn')?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const u = await window.innovaAuth?.getUser?.();
+      if (u) {
+        // Trigger profile modal (mesmo handler do sidebar footer)
+        const accountFooter = document.querySelector('.sidebar-footer .account-info');
+        if (accountFooter) accountFooter.click();
+        else location.href = 'configuracoes.html';
+      } else {
+        location.href = 'login.html';
+      }
+    });
+  }
+
   // Carrega o handler do sininho de notificacoes (so se a pagina tem topbar)
   if (document.querySelector('.topbar-btn[title="Notificações"]')) {
     const s = document.createElement('script');
