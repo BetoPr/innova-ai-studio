@@ -3964,6 +3964,50 @@ body.light-mode .tut-card.tapped {
 }
 .tut-modal-cta svg { width: 16px; height: 16px; }
 
+/* Gate de login no Tutorial (cards visíveis, conteúdo só pra logados) */
+.tut-gate-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 22px;
+}
+.tut-gate-actions .tut-modal-cta {
+  margin-top: 0;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+.tut-gate-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.tut-gate-secondary:hover {
+  border-color: var(--accent-2);
+  color: var(--text);
+  background: rgba(167, 139, 250, 0.06);
+}
+.tut-gate-secondary strong { color: var(--accent-2); margin-left: 4px; }
+.tut-gate-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 16px 0 0;
+}
+.tut-gate-note svg { width: 14px; height: 14px; color: var(--ok); }
+
 /* Tutorial — Responsivo */
 @media (max-width: 768px) {
   .tut-hero { padding: 24px 18px 16px; }

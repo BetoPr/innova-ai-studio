@@ -89,7 +89,7 @@
   </form>
 
   <div class="footer-link">
-    Não tem conta? <a href="cadastro.html">Criar conta grátis</a>
+    Não tem conta? <a href="cadastro.html" id="signupLink">Criar conta grátis</a>
   </div>
 
   <div class="skip-link">
@@ -119,10 +119,27 @@ async function waitForSupabase(timeoutMs = 10000) {
   });
 }
 
+// Pega return URL com whitelist: só permite caminhos relativos (proteção
+// contra open-redirect pra domínios externos maliciosos).
+function getReturnUrl() {
+  const ret = new URLSearchParams(location.search).get('return') || '';
+  if (!ret) return 'index.html';
+  // Aceita só URLs que parecem caminho relativo (não absoluto, não //, sem :)
+  if (/^[a-z0-9_-]+\.html(\?.*)?(#.*)?$/i.test(ret)) return ret;
+  return 'index.html';
+}
+
+// Propaga ?return= no link "Criar conta grátis"
+(() => {
+  const ret = new URLSearchParams(location.search).get('return');
+  const link = document.getElementById('signupLink');
+  if (ret && link) link.href = `cadastro.html?return=${encodeURIComponent(ret)}`;
+})();
+
 (async () => {
   const supabase = await waitForSupabase();
   const { data: { session } } = await supabase.auth.getSession();
-  if (session) location.href = 'index.html';
+  if (session) location.href = getReturnUrl();
 })();
 
 $('loginForm').addEventListener('submit', async e => {
@@ -138,7 +155,7 @@ $('loginForm').addEventListener('submit', async e => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     showAlert('✓ Logado com sucesso, redirecionando…', 'success');
-    setTimeout(() => location.href = 'index.html', 600);
+    setTimeout(() => location.href = getReturnUrl(), 600);
   } catch (e) {
     let msg = e.message || 'Erro ao entrar';
     if (msg.includes('Invalid login')) msg = 'E-mail ou senha incorretos.';

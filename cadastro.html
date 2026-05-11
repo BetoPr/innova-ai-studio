@@ -78,7 +78,7 @@
   </form>
 
   <div class="footer-link">
-    Já tem conta? <a href="login.html">Entrar</a>
+    Já tem conta? <a href="login.html" id="loginLink">Entrar</a>
   </div>
 
   <div class="skip-link">
@@ -107,10 +107,24 @@ async function waitForSupabase(timeoutMs = 10000) {
   });
 }
 
+function getReturnUrl() {
+  const ret = new URLSearchParams(location.search).get('return') || '';
+  if (!ret) return 'index.html';
+  if (/^[a-z0-9_-]+\.html(\?.*)?(#.*)?$/i.test(ret)) return ret;
+  return 'index.html';
+}
+
+// Propaga ?return= no link "Entrar"
+(() => {
+  const ret = new URLSearchParams(location.search).get('return');
+  const link = document.getElementById('loginLink');
+  if (ret && link) link.href = `login.html?return=${encodeURIComponent(ret)}`;
+})();
+
 (async () => {
   const supabase = await waitForSupabase();
   const { data: { session } } = await supabase.auth.getSession();
-  if (session) location.href = 'index.html';
+  if (session) location.href = getReturnUrl();
 })();
 
 const USERNAME_RE = /^[a-z0-9_-]{3,20}$/;
@@ -171,7 +185,7 @@ $('signupForm').addEventListener('submit', async e => {
       btn.textContent = 'Conta criada';
     } else {
       showAlert('✓ Conta criada e logada, redirecionando…', 'success');
-      setTimeout(() => location.href = 'index.html', 600);
+      setTimeout(() => location.href = getReturnUrl(), 600);
     }
   } catch (e) {
     let msg = e.message || 'Erro ao criar conta';
