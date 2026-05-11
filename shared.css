@@ -4001,6 +4001,60 @@ body.light-mode .tut-card.tapped {
 .tut-copy-btn.copied { background: var(--ok); }
 .tut-copy-btn svg { width: 13px; height: 13px; }
 
+/* Imagens ilustrativas dentro dos tópicos (prints de tela, fluxos, etc).
+   Se o arquivo não existir, a tag é escondida via onerror inline (degradação
+   graciosa — texto continua legível sem o print). */
+.tut-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 14px auto 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Botão "Entrar com Google" usado em login.html e cadastro.html */
+.oauth-btn {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px;
+  background: #fff;
+  color: #1f1f1f;
+  border: 1px solid #dadce0;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, transform .1s, box-shadow .15s;
+  margin-bottom: 14px;
+}
+.oauth-btn:hover:not(:disabled) {
+  background: #f6f7f9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.oauth-btn:active:not(:disabled) { transform: translateY(1px); }
+.oauth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.oauth-btn svg { flex-shrink: 0; }
+
+.oauth-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 14px 0 18px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.oauth-divider::before,
+.oauth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
 .tut-modal-cta {
   display: inline-flex;
   align-items: center;
