@@ -31,7 +31,18 @@ window.innovaAuth = {
     return session;
   },
   async signOut() {
-    await supabase.auth.signOut();
+    // Timeout de 5s — se a rede oscilar e a resposta do signOut não voltar,
+    // limpa storage manualmente e redireciona mesmo assim. O usuário não fica
+    // preso "clicando em Sair sem nada acontecer".
+    try {
+      await Promise.race([
+        supabase.auth.signOut(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('signOut timeout')), 5000)),
+      ]);
+    } catch (e) {
+      console.warn('[signOut] timeout/erro, limpando storage local e seguindo:', e.message);
+      try { localStorage.removeItem('innova-auth'); } catch {}
+    }
     location.href = 'login.html';
   },
   onChange(callback) {
