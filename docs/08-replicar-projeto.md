@@ -25,7 +25,7 @@ Antes de codar, responda:
 
 ```bash
 # Forka este projeto:
-git clone https://github.com/BetoPr/marca-dagua.git meu-novo-saas
+git clone https://github.com/BetoPr/innova-ai-studio.git meu-novo-saas
 cd meu-novo-saas
 rm -rf .git
 git init

@@ -16,7 +16,7 @@
 |---|---|---|
 | **Free** | R$ 0 | Galeria pública, 5 prompts publicados, ferramentas com marca d'água, Chat IA com chave própria, construtor básico (5 blocos) |
 | **Pro** | R$ 39,90/mês ou R$ 419/ano (R$ 34,90/mês) | Tudo do Free + Prompts ilimitados, construtor completo (11 blocos), 50+ modelos no Chat IA, sem marca d'água, prompts Pro curados, selo Pro |
-| **Studio** (em breve) | R$ 89,90/mês | Tudo do Pro + 150 imagens geradas/mês incluídas (Whisk, Flux, Imagen 4) |
+| **Studio** (em breve) | R$ 89,90/mês | Tudo do Pro + 150 imagens geradas/mês incluídas (Flow, Flux, Imagen 4) |
 
 **Por que mais barato que concorrentes (Banana Prompts ~US$ 9,99/mês):** BYOK no Chat IA significa que não pagamos nem fazemos markup nas mensagens IA. O cliente paga direto pra Groq/OpenAI/OpenRouter na conta dele (Groq tem free tier generoso). A gente cobra só pelo curadoria + ferramentas + comunidade.
 
@@ -57,7 +57,7 @@ Usuário cola sua chave de API direto no navegador (localStorage). **Por quê:**
 - Trade-off: usuário precisa configurar antes
 
 ### GitHub Pages como host
-Site servido em https://betopr.github.io/marca-dagua/. **Por quê:**
+Site servido em https://betopr.github.io/innova-ai-studio/. **Por quê:**
 - Grátis ilimitado
 - HTTPS automático
 - Deploy via `git push` (sem CI/CD complexo)

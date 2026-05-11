@@ -216,7 +216,7 @@
     const nav = document.createElement('nav');
     nav.className = 'mobile-bottom-nav';
     nav.innerHTML = `
-      <a href="index.html" class="mbn-item ${isAt('index.html') || path === '/' || path.endsWith('/marca-dagua/') ? 'active' : ''}">
+      <a href="index.html" class="mbn-item ${isAt('index.html') || path === '/' || path.endsWith('/innova-ai-studio/') ? 'active' : ''}">
         <i data-lucide="home"></i>
         <span>Início</span>
       </a>

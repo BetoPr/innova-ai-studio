@@ -7,13 +7,13 @@
 git add .
 git commit -m "..."
 git push
-# 1-2 min → ao vivo em https://betopr.github.io/marca-dagua/
+# 1-2 min → ao vivo em https://betopr.github.io/innova-ai-studio/
 ```
 
 Sem build, sem CI. O HTML/CSS/JS são servidos diretamente do branch `main`.
 
 ### Verificar deploy
-- https://betopr.github.io/marca-dagua/ deve carregar
+- https://betopr.github.io/innova-ai-studio/ deve carregar
 - Hard refresh: `Ctrl+Shift+R` no Chrome
 - Cache do GitHub Pages às vezes demora; se preocupado, abrir aba anônima
 

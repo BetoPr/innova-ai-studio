@@ -28,7 +28,7 @@
 
 | Camada | Onde | URL |
 |---|---|---|
-| Frontend | GitHub Pages (repo `BetoPr/marca-dagua`) | https://betopr.github.io/marca-dagua/ |
+| Frontend | GitHub Pages (repo `BetoPr/innova-ai-studio`) | https://betopr.github.io/innova-ai-studio/ |
 | Backend | Supabase (sa-east-1) | `htaihtmpnwzyxamkhnty.supabase.co` |
 | Webhooks | Edge function `asaas-webhook` | Configurado no painel Asaas |
 
