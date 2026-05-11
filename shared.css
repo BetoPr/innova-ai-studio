@@ -3958,6 +3958,49 @@ body.light-mode .tut-card.tapped {
 }
 .tut-section-body a:hover { color: var(--accent); }
 
+/* Bloco de prompt copiável dentro de um tópico (ex: prompt de enhance) */
+.tut-copyblock {
+  position: relative;
+  margin: 12px 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+.tut-pre {
+  margin: 0;
+  padding: 14px 16px;
+  padding-top: 44px;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.tut-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.tut-copy-btn:hover { background: var(--accent-2); transform: translateY(-1px); }
+.tut-copy-btn.copied { background: var(--ok); }
+.tut-copy-btn svg { width: 13px; height: 13px; }
+
 .tut-modal-cta {
   display: inline-flex;
   align-items: center;
