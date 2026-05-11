@@ -195,6 +195,19 @@
   aside.innerHTML = html;
   setupAuthFooter();
 
+  // === Atalho "?" pro Tutorial no topbar (todas as páginas, todos os states) ===
+  const topbarActions = document.querySelector('.topbar-actions');
+  if (topbarActions && !topbarActions.querySelector('.topbar-help')) {
+    const helpBtn = document.createElement('a');
+    helpBtn.href = 'tutorial.html';
+    helpBtn.className = 'topbar-btn topbar-help';
+    helpBtn.title = 'Guia & Tutoriais';
+    helpBtn.setAttribute('aria-label', 'Abrir Guia & Tutoriais');
+    helpBtn.innerHTML = '<i data-lucide="graduation-cap"></i>';
+    // Insere antes do primeiro botão pra ficar à esquerda do tema/sininho
+    topbarActions.insertBefore(helpBtn, topbarActions.firstChild);
+  }
+
   // === Bottom navigation flutuante (mobile only) ===
   // Renderiza fora da sidebar, fixed no bottom da viewport
   if (!document.querySelector('.mobile-bottom-nav')) {

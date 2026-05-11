@@ -4058,6 +4058,98 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 }
 
 /* ========================================
+   TOPBAR HELP BUTTON (atalho pro Tutorial)
+   ======================================== */
+.topbar-help {
+  position: relative;
+  color: var(--accent-2);
+}
+.topbar-help svg {
+  width: 18px; height: 18px;
+  stroke-width: 2;
+}
+.topbar-help:hover {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+/* Pontinho de "novo" sutilmente piscando */
+.topbar-help::after {
+  content: '';
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  box-shadow: 0 0 0 2px var(--panel), 0 0 8px rgba(167, 139, 250, 0.6);
+  animation: topbarHelpPulse 2s ease-in-out infinite;
+}
+@keyframes topbarHelpPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ========================================
+   LANDING — HERO GUIDE HINT (Primeira vez? Guia →)
+   ======================================== */
+.land-guide-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 16px;
+  background: rgba(167, 139, 250, 0.08);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  border-radius: 999px;
+  color: var(--accent-2);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background .2s, border-color .2s, transform .15s;
+}
+.land-guide-hint:hover {
+  background: rgba(167, 139, 250, 0.15);
+  border-color: var(--accent-2);
+  transform: translateY(-1px);
+}
+.land-guide-hint svg {
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   LANDING — HERO GLOW (sutil, visual polish)
+   ======================================== */
+.land-hero {
+  position: relative;
+  overflow: hidden;
+}
+.land-hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 600px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(167, 139, 250, 0.18) 0%,
+    rgba(124, 58, 237, 0.08) 30%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+.land-hero > * { position: relative; z-index: 1; }
+body.light-mode .land-hero::before {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(124, 58, 237, 0.1) 0%,
+    rgba(54, 201, 138, 0.06) 30%,
+    transparent 70%
+  );
+}
+
+/* ========================================
    MOBILE BOTTOM NAVIGATION (estilo app nativo)
    ======================================== */
 .mobile-bottom-nav {
