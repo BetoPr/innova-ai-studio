@@ -50,6 +50,18 @@ window.innovaAuth = {
   },
 };
 
+// Registra o Service Worker pra resolver cache crônico de JS/CSS.
+// Estratégia network-first: novo deploy é visto imediatamente, sem precisar
+// de Ctrl+Shift+R. Falha silenciosa em browsers que não suportam.
+if ('serviceWorker' in navigator) {
+  // Resolve caminho relativo da raiz do site (funciona em GitHub Pages
+  // servido em sub-path como /innova-ai-studio/).
+  const base = location.pathname.replace(/[^/]*$/, '');
+  navigator.serviceWorker.register(base + 'sw.js').catch((e) => {
+    console.warn('[sw] falha ao registrar:', e?.message || e);
+  });
+}
+
 // Notifica scripts não-módulos que carregaram
 document.dispatchEvent(new CustomEvent('supabase-ready'));
 
