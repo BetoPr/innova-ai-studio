@@ -45,34 +45,12 @@
       <p id="modeSubtitle">Adicione o prompt, escolha estilo e publique pra comunidade testar.</p>
     </div>
 
-    <!-- Stepper -->
-    <div class="share-stepper">
-      <div class="share-step-pill active" data-step="1">
-        <span class="num">1</span>
-        <span class="lbl">Conteúdo</span>
-      </div>
-      <div class="share-step-line"></div>
-      <div class="share-step-pill" data-step="2">
-        <span class="num">2</span>
-        <span class="lbl">Detalhes</span>
-      </div>
-      <div class="share-step-line"></div>
-      <div class="share-step-pill" data-step="3">
-        <span class="num">3</span>
-        <span class="lbl">Capa</span>
-      </div>
-      <div class="share-step-line"></div>
-      <div class="share-step-pill" data-step="4">
-        <span class="num">4</span>
-        <span class="lbl">Publicar</span>
-      </div>
-    </div>
-
     <!-- Content -->
-    <form class="share-form" id="shareForm" autocomplete="off" onsubmit="return false;">
+    <form class="share-form share-form-single" id="shareForm" autocomplete="off" onsubmit="return false;">
 
-      <!-- ===== Step 1: Conteúdo ===== -->
+      <!-- ===== Conteúdo ===== -->
       <section class="share-step active" data-step="1">
+        <h2 class="share-section-h">Conteúdo do prompt</h2>
         <div class="share-card">
           <label class="share-label" for="promptText">Prompt</label>
           <p class="share-help">Escreva o prompt que você usou (de preferência em inglês). Vai aparecer no detalhe pra outros copiarem.</p>
@@ -96,8 +74,9 @@
         </div>
       </section>
 
-      <!-- ===== Step 2: Detalhes ===== -->
-      <section class="share-step" data-step="2">
+      <!-- ===== Detalhes ===== -->
+      <section class="share-step active" data-step="2">
+        <h2 class="share-section-h">Detalhes</h2>
         <div class="share-card">
           <label class="share-label" for="title">Título <span class="req">*</span></label>
           <input type="text" id="title" maxlength="60" placeholder="Ex: Retrato executivo em escritório moderno">
@@ -149,8 +128,9 @@
         </div>
       </section>
 
-      <!-- ===== Step 3: Capa ===== -->
-      <section class="share-step" data-step="3">
+      <!-- ===== Capa ===== -->
+      <section class="share-step active" data-step="3">
+        <h2 class="share-section-h">Capa</h2>
         <div class="share-card">
           <label class="share-label">Imagem de capa</label>
           <p class="share-help">JPG, PNG ou WebP. Até 10MB. <strong>Use a imagem que você gerou</strong> — não envie obras de terceiros.</p>
@@ -174,8 +154,9 @@
         </div>
       </section>
 
-      <!-- ===== Step 4: Publicar ===== -->
-      <section class="share-step" data-step="4">
+      <!-- ===== Configurações ===== -->
+      <section class="share-step active" data-step="4">
+        <h2 class="share-section-h">Configurações</h2>
         <div class="share-card">
           <label class="share-toggle">
             <input type="checkbox" id="publishToggle" checked>
@@ -199,11 +180,6 @@
           </label>
         </div>
 
-        <div class="share-card share-summary">
-          <h3>Resumo</h3>
-          <div class="share-summary-grid" id="summary"></div>
-        </div>
-
         <div class="share-card share-limit" id="limitCard" hidden>
           <i data-lucide="alert-circle"></i>
           <div>
@@ -214,16 +190,9 @@
         </div>
       </section>
 
-      <!-- Stepper actions -->
-      <div class="share-actions">
-        <button type="button" class="gal-btn-ghost" id="prevBtn" hidden>
-          <i data-lucide="arrow-left"></i> Voltar
-        </button>
-        <span class="share-step-info"><span id="stepCur">1</span> de 4</span>
-        <button type="button" class="gal-btn-primary" id="nextBtn">
-          Próximo <i data-lucide="arrow-right"></i>
-        </button>
-        <button type="button" class="gal-btn-primary" id="publishBtn" hidden>
+      <!-- Action: só botão publicar (no antigo stepper tinha prev/next) -->
+      <div class="share-actions share-actions-single">
+        <button type="button" class="gal-btn-primary" id="publishBtn">
           <i data-lucide="rocket"></i> <span id="publishLbl">Publicar</span>
         </button>
       </div>

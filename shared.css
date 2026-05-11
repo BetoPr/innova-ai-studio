@@ -2134,6 +2134,22 @@ body.light-mode .share-header h1 {
 .share-step { display: none; flex-direction: column; gap: 14px; }
 .share-step.active { display: flex; }
 
+/* Layout single-page: todas as sections visíveis com headings claros. */
+.share-form-single { gap: 28px; }
+.share-form-single .share-step { padding-top: 8px; }
+.share-section-h {
+  margin: 0 0 4px;
+  font-family: 'Sora', 'Inter', sans-serif;
+  font-size: 16px; font-weight: 700; letter-spacing: 0.01em;
+  color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+}
+.share-section-h::before {
+  content: ''; flex: 0 0 4px; height: 18px;
+  background: var(--accent); border-radius: 2px;
+}
+.share-actions-single { justify-content: flex-end; margin-top: 8px; }
+
 .share-card {
   background: var(--panel); border: 1px solid var(--border);
   border-radius: 14px; padding: 18px;
