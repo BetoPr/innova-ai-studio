@@ -348,11 +348,20 @@ body.sidebar-collapsed { --sidebar-w: 70px; }
 .sidebar .nav-items a.disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
 .sidebar .nav-items a .icon { display: flex; align-items: center; justify-content: center; width: 18px; flex-shrink: 0; }
 .sidebar .nav-items a .icon svg { width: 16px; height: 16px; stroke-width: 2; }
+/* Garante que o label do nav item fica em UMA linha (sem quebrar quando tem badge ao lado) */
+.sidebar .nav-items a > span:not(.icon):not(.badge):not(.badge-soon):not(.badge-new) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1 1 auto;
+}
 .sidebar .nav-items a .badge {
-  margin-left: auto; font-size: 9px; padding: 2px 6px;
+  margin-left: auto; flex-shrink: 0;
+  font-size: 8px; padding: 1px 5px;
   background: var(--panel-2); border: 1px solid var(--border);
   border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--muted); font-weight: 600;
+  color: var(--muted); font-weight: 700;
 }
 .sidebar .nav-items a .badge-soon {
   background: rgba(255,184,77,0.14); border-color: rgba(255,184,77,0.3);
