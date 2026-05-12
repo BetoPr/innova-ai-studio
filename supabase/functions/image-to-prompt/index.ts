@@ -17,8 +17,8 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const FEATURE_KEY = 'photo_to_prompt';
 // 0 = ilimitado. Pro Max ainda não existe oficialmente; quando criar, vai cair aqui.
 const LIMITS: Record<string, number> = {
-  free: 5,
-  pro: 30,
+  free: 15,
+  pro: 35,
   pro_max: 0,
 };
 

@@ -36,7 +36,7 @@
       icon: 'users',
       color: 'pink',
       items: [
-        { href: 'galeria.html', icon: 'layout-grid', label: 'Galeria', i18n: 'sidebar.gallery' },
+        { href: 'galeria.html', icon: 'layout-grid', label: 'Galeria Pública', i18n: 'sidebar.gallery' },
         { href: 'compartilhar.html', icon: 'plus-circle', label: 'Compartilhar', i18n: 'sidebar.share' },
         { href: 'meus-prompts.html', icon: 'file-text', label: 'Meus prompts', i18n: 'sidebar.myPrompts' },
         { href: 'favoritos.html', icon: 'bookmark', label: 'Favoritos', i18n: 'sidebar.favorites' },
@@ -222,7 +222,7 @@
       </a>
       <a href="galeria.html" class="mbn-item ${isAt('galeria.html') ? 'active' : ''}">
         <i data-lucide="layout-grid"></i>
-        <span>Galeria</span>
+        <span>Galeria Pública</span>
       </a>
       <a href="construtor.html" class="mbn-item mbn-center ${isAt('construtor.html') ? 'active' : ''}">
         <span class="mbn-fab"><i data-lucide="sparkles"></i></span>

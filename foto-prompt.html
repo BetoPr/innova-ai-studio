@@ -291,7 +291,7 @@
 
       <!-- Tip pra Free -->
       <div class="f2p-tip" id="upgradeTip" hidden>
-        💡 No plano Free você tem <strong>5 análises por dia</strong>. Pra usar sem limite, <a href="upgrade.html">conheça o Pro</a>.
+        💡 No plano Free você tem <strong>15 análises por dia</strong>. Pra usar bem mais (35/dia), <a href="upgrade.html">conheça o Pro</a>.
       </div>
     </div>
 
@@ -496,8 +496,8 @@ function bindCopyButtons() {
 
   const planActive = prof?.pro_until && new Date(prof.pro_until) > new Date();
   const planKey = planActive ? prof.plan : 'free';
-  const LIMITS = { free: 5, pro: 30, pro_max: 0 };
-  const limit = LIMITS[planKey] ?? 5;
+  const LIMITS = { free: 15, pro: 35, pro_max: 0 };
+  const limit = LIMITS[planKey] ?? 15;
 
   // Lê quota atual
   const { data: q } = await sb.rpc('check_feature_quota', {
