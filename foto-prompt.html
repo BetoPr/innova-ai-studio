@@ -22,7 +22,8 @@
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .f2p-hero p { color: var(--muted); font-size: 14px; max-width: 540px; margin: 0 auto; }
+  .f2p-hero p { color: var(--muted); font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.55; }
+  .f2p-hero p strong { color: var(--text); }
 
   .f2p-quota {
     display: inline-flex; align-items: center; gap: 6px;
@@ -35,17 +36,6 @@
   .f2p-quota.full { background: rgba(255, 93, 108, 0.1); border-color: rgba(255, 93, 108, 0.3); color: #ff8094; }
   .f2p-quota svg { width: 12px; height: 12px; }
 
-  /* Frase explicativa logo abaixo da pílula: deixa CLARO que o limite reseta todo dia */
-  .f2p-quota-info {
-    display: inline-flex; align-items: center; gap: 6px;
-    margin-top: 10px;
-    color: var(--muted);
-    font-size: 12px;
-    max-width: 420px;
-    line-height: 1.5;
-  }
-  .f2p-quota-info svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--accent-2); }
-  .f2p-quota-info strong { color: var(--text); }
 
   .f2p-drop {
     display: block;
@@ -271,14 +261,10 @@
       <div class="f2p-hero">
         <span class="hero-badge">Beta</span>
         <h1>Foto → Prompt</h1>
-        <p>Manda uma foto e a IA descreve + gera um prompt pronto pra colar no Flow. Sem precisar configurar nada.</p>
+        <p>Manda uma foto e a IA descreve + gera um prompt pronto pra colar no Flow. Sem precisar configurar nada. <strong>O limite é por dia</strong> — toda <strong>meia-noite</strong> o contador zera e você ganha as conversões de novo.</p>
         <div class="f2p-quota" id="quotaPill" hidden title="Conversões de foto em prompt — o contador reseta automaticamente todo dia à meia-noite (horário de Brasília)">
           <i data-lucide="zap"></i>
           <span id="quotaText"></span>
-        </div>
-        <div class="f2p-quota-info">
-          <i data-lucide="info"></i>
-          <span>O limite é por <strong>dia</strong> — toda <strong>meia-noite</strong> o contador zera e você ganha as conversões de novo.</span>
         </div>
       </div>
 
