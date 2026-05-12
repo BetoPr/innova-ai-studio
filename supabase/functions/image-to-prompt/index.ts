@@ -1,5 +1,5 @@
 // image-to-prompt
-// Recebe imagem em base64, chama Gemini Vision, retorna descrição PT + prompt EN.
+// Recebe imagem em base64, chama Groq Vision (Llama 3.2), retorna descrição PT + prompt EN.
 // Aplica cota diária por plano: Free 5/dia, Pro 30/dia, Pro Max ilimitado.
 //
 // POST /functions/v1/image-to-prompt
@@ -9,7 +9,8 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 
-const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY')!;
+const GROQ_API_KEY = Deno.env.get('GROQ_API_KEY')!;
+const GROQ_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -101,41 +102,49 @@ serve(async (req) => {
       return jsonRes({ error: 'mime_type não suportado (use jpeg, png ou webp)' }, 400);
     }
 
-    // 5) Chama Gemini 2.0 Flash com a imagem
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-    const geminiRes = await fetch(geminiUrl, {
+    // 5) Chama Groq Vision com a imagem (formato OpenAI-compatible)
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        contents: [{
-          parts: [
-            { text: SYSTEM_PROMPT },
-            { inline_data: { mime_type: mimeType, data: imageBase64 } },
-          ],
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          response_mime_type: 'application/json',
-        },
+        model: GROQ_MODEL,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: SYSTEM_PROMPT },
+              {
+                type: 'image_url',
+                image_url: { url: `data:${mimeType};base64,${imageBase64}` },
+              },
+            ],
+          },
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+        max_tokens: 800,
       }),
     });
 
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      console.error('Gemini API error:', geminiRes.status, errText.slice(0, 500));
+    if (!groqRes.ok) {
+      const errText = await groqRes.text();
+      console.error('Groq API error:', groqRes.status, errText.slice(0, 500));
       return jsonRes({
         error: 'falha ao analisar imagem',
         details: errText.slice(0, 200),
       }, 502);
     }
 
-    const geminiData = await geminiRes.json();
-    const text = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const groqData = await groqRes.json();
+    const text = groqData?.choices?.[0]?.message?.content || '';
     let parsed: { description_pt?: string; prompt_en?: string };
     try {
       parsed = JSON.parse(text);
     } catch {
-      console.error('Gemini retornou JSON inválido:', text.slice(0, 300));
+      console.error('Groq retornou JSON inválido:', text.slice(0, 300));
       return jsonRes({ error: 'IA retornou formato inesperado, tenta de novo' }, 502);
     }
 
