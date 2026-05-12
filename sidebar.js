@@ -25,7 +25,6 @@
       icon: 'sparkles',
       color: 'purple',
       items: [
-        { href: 'chat-ia.html', icon: 'message-circle', label: 'Chat IA', i18n: 'sidebar.chatIa' },
         { href: 'construtor.html', icon: 'blocks', label: 'Construtor', i18n: 'sidebar.builder' },
         { href: 'gerar-imagens.html', icon: 'sparkles', label: 'Geração de imagens', soon: true, i18n: 'sidebar.imageGen' },
         { href: 'transcrever.html', icon: 'mic', label: 'Transcrever', i18n: 'sidebar.transcribe' },
