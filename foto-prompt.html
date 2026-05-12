@@ -35,6 +35,18 @@
   .f2p-quota.full { background: rgba(255, 93, 108, 0.1); border-color: rgba(255, 93, 108, 0.3); color: #ff8094; }
   .f2p-quota svg { width: 12px; height: 12px; }
 
+  /* Frase explicativa logo abaixo da pílula: deixa CLARO que o limite reseta todo dia */
+  .f2p-quota-info {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+    max-width: 420px;
+    line-height: 1.5;
+  }
+  .f2p-quota-info svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--accent-2); }
+  .f2p-quota-info strong { color: var(--text); }
+
   .f2p-drop {
     display: block;
     position: relative;
@@ -260,9 +272,13 @@
         <span class="hero-badge">Beta</span>
         <h1>Foto → Prompt</h1>
         <p>Manda uma foto e a IA descreve + gera um prompt pronto pra colar no Flow. Sem precisar configurar nada.</p>
-        <div class="f2p-quota" id="quotaPill" hidden>
+        <div class="f2p-quota" id="quotaPill" hidden title="Conversões de foto em prompt — o contador reseta automaticamente todo dia à meia-noite (horário de Brasília)">
           <i data-lucide="zap"></i>
           <span id="quotaText"></span>
+        </div>
+        <div class="f2p-quota-info">
+          <i data-lucide="info"></i>
+          <span>O limite é por <strong>dia</strong> — toda <strong>meia-noite</strong> o contador zera e você ganha as conversões de novo.</span>
         </div>
       </div>
 
@@ -322,7 +338,7 @@
 
       <!-- Tip pra Free -->
       <div class="f2p-tip" id="upgradeTip" hidden>
-        💡 No plano Free você tem <strong>15 análises por dia</strong>. Pra usar bem mais (35/dia), <a href="upgrade.html">conheça o Pro</a>.
+        💡 No plano <strong>Free</strong> você tem <strong>15 conversões de foto pra prompt por dia</strong> (reseta toda meia-noite). Pra usar bem mais (<strong>35/dia</strong>), <a href="upgrade.html">conheça o Pro</a>.
       </div>
 
       <!-- Alternativa externa: ChatGPT GPT customizado público -->
@@ -485,10 +501,10 @@ function updateQuotaPill(quota) {
   const text = $('quotaText');
   pill.hidden = false;
   if (quota.limit === 0) {
-    text.textContent = `Ilimitado (${quota.plan || 'Pro Max'})`;
+    text.textContent = `Conversões ilimitadas (${quota.plan || 'Pro Max'})`;
     pill.classList.remove('full');
   } else {
-    text.textContent = `${quota.used} de ${quota.limit} hoje`;
+    text.textContent = `${quota.used} de ${quota.limit} conversões hoje`;
     pill.classList.toggle('full', quota.remaining === 0);
   }
 }

@@ -97,7 +97,7 @@ serve(async (req) => {
     if (!quota?.allowed) {
       return jsonRes({
         error: 'limit_reached',
-        message: `Você atingiu o limite de ${dailyLimit} análises de hoje no plano ${planKey}. Volta amanhã ou faça upgrade.`,
+        message: `Você atingiu o limite diário de ${dailyLimit} conversões de foto pra prompt (plano ${planKey}). O contador reseta amanhã à meia-noite. Pra continuar hoje, faça upgrade pro Pro (35/dia).`,
         quota: { used: quota?.used ?? 0, limit: dailyLimit, remaining: 0 },
       }, 429);
     }
