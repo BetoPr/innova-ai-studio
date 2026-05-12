@@ -25,6 +25,7 @@
       icon: 'sparkles',
       color: 'purple',
       items: [
+        { href: 'foto-prompt.html', icon: 'image-plus', label: 'Foto → Prompt', badge: 'Novo', i18n: 'sidebar.photoToPrompt' },
         { href: 'construtor.html', icon: 'blocks', label: 'Construtor', i18n: 'sidebar.builder' },
         { href: 'gerar-imagens.html', icon: 'sparkles', label: 'Geração de imagens', soon: true, i18n: 'sidebar.imageGen' },
         { href: 'transcrever.html', icon: 'mic', label: 'Transcrever', i18n: 'sidebar.transcribe' },
@@ -164,7 +165,7 @@
       html += `<a href="${it.href}" class="${cls}">
         <span class="icon"><i data-lucide="${it.icon}"></i></span>
         <span data-i18n="${it.i18n}">${it.label}</span>
-        ${it.disabled ? '<span class="badge" data-i18n="sidebar.soonBadge">Em breve</span>' : it.soon ? '<span class="badge badge-soon" data-i18n="sidebar.soonBadge">Em breve</span>' : ''}
+        ${it.disabled ? '<span class="badge" data-i18n="sidebar.soonBadge">Em breve</span>' : it.soon ? '<span class="badge badge-soon" data-i18n="sidebar.soonBadge">Em breve</span>' : it.badge ? `<span class="badge badge-new">${it.badge}</span>` : ''}
       </a>`;
     });
     html += `</div>`;

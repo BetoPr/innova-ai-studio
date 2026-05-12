@@ -358,6 +358,10 @@ body.sidebar-collapsed { --sidebar-w: 70px; }
   background: rgba(255,184,77,0.14); border-color: rgba(255,184,77,0.3);
   color: #ffb84d;
 }
+.sidebar .nav-items a .badge-new {
+  background: rgba(54,201,138,0.14); border-color: rgba(54,201,138,0.3);
+  color: var(--ok);
+}
 
 /* Footer */
 .sidebar-footer {

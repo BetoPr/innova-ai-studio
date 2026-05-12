@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Foto → Prompt — Innova & AI Studio</title>
+<meta name="description" content="Manda uma foto, a IA descreve e gera um prompt pronto pra colar no Flow. Sem precisar configurar API.">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="shared.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  .f2p-wrap { max-width: 900px; margin: 0 auto; padding: 16px 36px 60px; }
+  .f2p-hero { text-align: center; margin: 18px 0 28px; }
+  .f2p-hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 32px; font-weight: 800;
+    margin: 8px 0 6px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .f2p-hero p { color: var(--muted); font-size: 14px; max-width: 540px; margin: 0 auto; }
+
+  .f2p-quota {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 14px;
+    padding: 6px 12px;
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px; color: var(--muted); font-weight: 600;
+  }
+  .f2p-quota.full { background: rgba(255, 93, 108, 0.1); border-color: rgba(255, 93, 108, 0.3); color: #ff8094; }
+  .f2p-quota svg { width: 12px; height: 12px; }
+
+  .f2p-drop {
+    position: relative;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 50px 24px;
+    text-align: center;
+    background: var(--panel);
+    cursor: pointer;
+    transition: border-color .2s, background .2s, transform .15s;
+  }
+  .f2p-drop:hover, .f2p-drop.over {
+    border-color: var(--accent-2);
+    background: var(--panel-2);
+  }
+  .f2p-drop input[type=file] { display: none; }
+  .f2p-drop-icon { width: 56px; height: 56px; margin: 0 auto 10px; color: var(--muted); }
+  .f2p-drop-icon svg { width: 56px; height: 56px; }
+  .f2p-drop strong { font-size: 17px; display: block; margin-bottom: 4px; }
+  .f2p-drop p { color: var(--muted); font-size: 13px; margin: 4px 0; }
+
+  .f2p-preview-wrap {
+    margin-top: 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .f2p-preview-img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    max-height: 360px;
+    object-fit: contain;
+    background: rgba(0,0,0,0.3);
+  }
+  .f2p-preview-actions {
+    display: flex; gap: 10px; padding: 14px;
+    justify-content: center; flex-wrap: wrap;
+  }
+
+  .f2p-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer; transition: all .15s;
+    border: 1px solid var(--border);
+    background: var(--panel-2); color: var(--text);
+  }
+  .f2p-btn:hover:not(:disabled) { transform: translateY(-1px); background: var(--panel); }
+  .f2p-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .f2p-btn.primary {
+    background: var(--accent); color: var(--bg); border-color: transparent;
+  }
+  .f2p-btn.primary:hover:not(:disabled) { background: var(--accent-2); }
+  .f2p-btn svg { width: 14px; height: 14px; }
+
+  .f2p-loading {
+    text-align: center; padding: 30px 20px;
+  }
+  .f2p-spinner {
+    display: inline-block; width: 36px; height: 36px;
+    border: 3px solid var(--border); border-top-color: var(--accent);
+    border-radius: 50%; animation: f2pSpin 0.8s linear infinite;
+    margin-bottom: 10px;
+  }
+  @keyframes f2pSpin { to { transform: rotate(360deg); } }
+  .f2p-loading p { color: var(--muted); font-size: 13px; margin: 4px 0; }
+
+  .f2p-result { margin-top: 22px; }
+  .f2p-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px; margin-bottom: 14px;
+  }
+  .f2p-card h3 {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: 15px; font-weight: 700; margin: 0 0 10px;
+  }
+  .f2p-card h3 .flag { font-size: 18px; }
+  .f2p-card .copy-row {
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .f2p-card .copy-row .text {
+    flex: 1;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .f2p-card .copy-row .text.mono {
+    font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .f2p-card .copy-btn-mini {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 10px; font-size: 12px;
+    background: var(--accent); color: var(--bg);
+    border: none; border-radius: 6px;
+    font-weight: 700; cursor: pointer;
+    transition: background .15s, transform .15s;
+  }
+  .f2p-card .copy-btn-mini:hover { background: var(--accent-2); transform: translateY(-1px); }
+  .f2p-card .copy-btn-mini.ok { background: var(--ok); }
+  .f2p-card .copy-btn-mini svg { width: 12px; height: 12px; }
+
+  .f2p-result-actions {
+    display: flex; gap: 10px; justify-content: center;
+    flex-wrap: wrap; margin-top: 18px;
+  }
+
+  .f2p-alert {
+    padding: 12px 14px;
+    background: rgba(255, 93, 108, 0.1);
+    border: 1px solid rgba(255, 93, 108, 0.3);
+    color: #ff8094;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  /* Auth gate visual idêntico ao do compartilhar.html */
+  .f2p-gate {
+    text-align: center; padding: 80px 24px;
+  }
+  .f2p-gate i {
+    width: 56px; height: 56px;
+    margin-bottom: 16px;
+    color: var(--muted);
+  }
+  .f2p-gate h2 {
+    font-family: 'Sora', sans-serif;
+    margin: 0 0 8px;
+  }
+  .f2p-gate p {
+    color: var(--muted); margin: 0 auto 22px;
+    max-width: 380px;
+  }
+
+  /* Hint pra Free se não logado */
+  .f2p-tip {
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    color: var(--accent-2);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    margin-top: 14px;
+    text-align: center;
+  }
+  .f2p-tip a { color: var(--accent-2); text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar"></aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="search-box">
+      <i data-lucide="search"></i>
+      <input type="text" placeholder="Buscar..." id="topSearch">
+      <kbd>Ctrl K</kbd>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" title="Notificações"><i data-lucide="bell"></i></button>
+      <div class="topbar-avatar">A</div>
+    </div>
+  </header>
+
+  <div class="f2p-wrap">
+
+    <!-- Auth gate (se não logado) -->
+    <div class="f2p-gate" id="authGate" hidden>
+      <i data-lucide="lock"></i>
+      <h2>Entra na sua conta pra usar</h2>
+      <p>A análise de imagem precisa identificar você pra controlar a cota diária. Cadastro é grátis e instantâneo.</p>
+      <a class="f2p-btn primary" id="goLogin">Entrar / Criar conta</a>
+    </div>
+
+    <!-- App principal -->
+    <div id="f2pApp" hidden>
+      <div class="f2p-hero">
+        <span class="hero-badge">Beta</span>
+        <h1>Foto → Prompt</h1>
+        <p>Manda uma foto e a IA descreve + gera um prompt pronto pra colar no Flow. Sem precisar configurar nada.</p>
+        <div class="f2p-quota" id="quotaPill" hidden>
+          <i data-lucide="zap"></i>
+          <span id="quotaText"></span>
+        </div>
+      </div>
+
+      <!-- Upload zone -->
+      <label class="f2p-drop" id="drop" for="fileInput">
+        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
+        <div class="f2p-drop-icon"><i data-lucide="image-plus"></i></div>
+        <strong>Clique ou arraste uma foto</strong>
+        <p>JPG, PNG ou WebP. Até 10MB.</p>
+        <p>A imagem fica privada — só você vê.</p>
+      </label>
+
+      <!-- Preview + analyze -->
+      <div class="f2p-preview-wrap" id="previewWrap" hidden>
+        <img class="f2p-preview-img" id="previewImg" alt="">
+        <div class="f2p-preview-actions">
+          <button class="f2p-btn" id="removeBtn"><i data-lucide="x"></i> Trocar foto</button>
+          <button class="f2p-btn primary" id="analyzeBtn"><i data-lucide="sparkles"></i> Analisar com IA</button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="f2p-loading" id="loading" hidden>
+        <div class="f2p-spinner"></div>
+        <p>Analisando sua foto…</p>
+        <p style="font-size:11px;">Isso costuma levar 5–10 segundos.</p>
+      </div>
+
+      <!-- Erro -->
+      <div class="f2p-alert" id="errorBox" hidden></div>
+
+      <!-- Resultado -->
+      <div class="f2p-result" id="resultWrap" hidden>
+        <div class="f2p-card">
+          <h3><span class="flag">🇧🇷</span> Descrição em português</h3>
+          <div class="copy-row">
+            <div class="text" id="descText"></div>
+            <button class="copy-btn-mini" data-target="descText"><i data-lucide="copy"></i> Copiar</button>
+          </div>
+        </div>
+
+        <div class="f2p-card">
+          <h3><span class="flag">🇺🇸</span> Prompt em inglês (cola no Flow)</h3>
+          <div class="copy-row">
+            <div class="text mono" id="promptText"></div>
+            <button class="copy-btn-mini" data-target="promptText"><i data-lucide="copy"></i> Copiar</button>
+          </div>
+        </div>
+
+        <div class="f2p-result-actions">
+          <a class="f2p-btn primary" href="https://labs.google/flow" target="_blank" rel="noopener">
+            <i data-lucide="external-link"></i> Abrir Flow
+          </a>
+          <button class="f2p-btn" id="newPhotoBtn"><i data-lucide="image-plus"></i> Analisar outra foto</button>
+        </div>
+      </div>
+
+      <!-- Tip pra Free -->
+      <div class="f2p-tip" id="upgradeTip" hidden>
+        💡 No plano Free você tem <strong>5 análises por dia</strong>. Pra usar sem limite, <a href="upgrade.html">conheça o Pro</a>.
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="toastHost"></div>
+
+<script src="favicon.js"></script>
+<script type="module" src="supabase-client.js"></script>
+<script src="sidebar.js"></script>
+<script type="module">
+import { supabase, SUPABASE_URL } from './supabase-client.js';
+
+const $ = (id) => document.getElementById(id);
+
+async function waitForSupabase(timeoutMs = 10000) {
+  if (window.supabase) return window.supabase;
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error('Supabase não carregou')), timeoutMs);
+    document.addEventListener('supabase-ready', () => { clearTimeout(t); resolve(window.supabase); }, { once: true });
+    if (window.supabase) { clearTimeout(t); resolve(window.supabase); }
+  });
+}
+
+let currentFile = null;
+let currentImageBase64 = null;
+let currentMimeType = null;
+
+function showError(msg) {
+  $('errorBox').textContent = msg;
+  $('errorBox').hidden = false;
+  setTimeout(() => $('errorBox').hidden = true, 6000);
+}
+
+// Comprime se > 1MB pra não desperdiçar tokens da Gemini com imagens enormes
+async function compressIfNeeded(file) {
+  if (file.size <= 1024 * 1024) return file;
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxDim = 1600;
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob((blob) => {
+        URL.revokeObjectURL(img.src);
+        resolve(blob ? new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' }) : file);
+      }, 'image/jpeg', 0.85);
+    };
+    img.onerror = () => resolve(file);
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      // result é "data:image/jpeg;base64,<dados>" — pega só a parte do base64
+      const base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function setFile(file) {
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) {
+    showError('Imagem muito grande (limite 10MB)');
+    return;
+  }
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+    showError('Use JPG, PNG ou WebP');
+    return;
+  }
+  const compressed = await compressIfNeeded(file);
+  currentFile = compressed;
+  currentMimeType = compressed.type;
+  currentImageBase64 = await fileToBase64(compressed);
+
+  $('previewImg').src = URL.createObjectURL(compressed);
+  $('previewWrap').hidden = false;
+  $('drop').style.display = 'none';
+  $('resultWrap').hidden = true;
+}
+
+async function analyze() {
+  if (!currentImageBase64) return;
+  $('analyzeBtn').disabled = true;
+  $('loading').hidden = false;
+  $('errorBox').hidden = true;
+  $('resultWrap').hidden = true;
+
+  try {
+    const sb = await waitForSupabase();
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Sessão expirada. Recarrega a página e entra de novo.');
+
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/image-to-prompt`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        image_base64: currentImageBase64,
+        mime_type: currentMimeType,
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (res.status === 429) {
+      showError(data.message || 'Limite diário atingido. Volta amanhã ou faça upgrade.');
+      $('upgradeTip').hidden = false;
+      return;
+    }
+
+    if (!res.ok) {
+      throw new Error(data.error || `Erro HTTP ${res.status}`);
+    }
+
+    $('descText').textContent = data.description_pt || '';
+    $('promptText').textContent = data.prompt_en || '';
+    $('resultWrap').hidden = false;
+    updateQuotaPill(data.quota);
+  } catch (e) {
+    console.error('[foto-prompt] erro:', e);
+    showError(e.message || 'Erro ao analisar imagem');
+  } finally {
+    $('loading').hidden = true;
+    $('analyzeBtn').disabled = false;
+  }
+}
+
+function updateQuotaPill(quota) {
+  if (!quota) return;
+  const pill = $('quotaPill');
+  const text = $('quotaText');
+  pill.hidden = false;
+  if (quota.limit === 0) {
+    text.textContent = `Ilimitado (${quota.plan || 'Pro Max'})`;
+    pill.classList.remove('full');
+  } else {
+    text.textContent = `${quota.used} de ${quota.limit} hoje`;
+    pill.classList.toggle('full', quota.remaining === 0);
+  }
+}
+
+function bindCopyButtons() {
+  document.querySelectorAll('.copy-btn-mini').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      try {
+        await navigator.clipboard.writeText(target.textContent);
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check"></i> Copiado!';
+        btn.classList.add('ok');
+        if (window.lucide) lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.classList.remove('ok');
+          if (window.lucide) lucide.createIcons();
+        }, 1500);
+      } catch {
+        // fallback: seleciona o texto
+        const range = document.createRange();
+        range.selectNodeContents(target);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    });
+  });
+}
+
+// === Init ===
+(async () => {
+  const sb = await waitForSupabase();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) {
+    $('authGate').hidden = false;
+    $('goLogin').href = `login.html?return=${encodeURIComponent(location.pathname + location.search)}`;
+    return;
+  }
+  $('f2pApp').hidden = false;
+
+  // Pega plano pra mostrar quota inicial
+  const { data: prof } = await sb
+    .from('profiles')
+    .select('plan, pro_until')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  const planActive = prof?.pro_until && new Date(prof.pro_until) > new Date();
+  const planKey = planActive ? prof.plan : 'free';
+  const LIMITS = { free: 5, pro: 30, pro_max: 0 };
+  const limit = LIMITS[planKey] ?? 5;
+
+  // Lê quota atual
+  const { data: q } = await sb.rpc('check_feature_quota', {
+    p_feature_key: 'photo_to_prompt',
+    p_daily_limit: limit,
+  });
+  const quota = Array.isArray(q) ? q[0] : q;
+  if (quota) {
+    updateQuotaPill({
+      used: quota.used,
+      limit,
+      remaining: quota.remaining,
+      plan: planKey,
+    });
+  }
+
+  if (planKey === 'free') $('upgradeTip').hidden = false;
+
+  // Listeners
+  $('fileInput').addEventListener('change', e => setFile(e.target.files[0]));
+  const drop = $('drop');
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    const f = e.dataTransfer?.files?.[0];
+    if (f) setFile(f);
+  });
+
+  $('analyzeBtn').addEventListener('click', analyze);
+  $('removeBtn').addEventListener('click', () => {
+    currentFile = null; currentImageBase64 = null;
+    $('fileInput').value = '';
+    $('previewWrap').hidden = true;
+    $('drop').style.display = '';
+    $('resultWrap').hidden = true;
+  });
+  $('newPhotoBtn').addEventListener('click', () => {
+    $('removeBtn').click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  bindCopyButtons();
+})();
+
+if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
