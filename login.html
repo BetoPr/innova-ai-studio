@@ -59,6 +59,44 @@
   .skip-link { text-align: center; margin-top: 24px; }
   .skip-link a { color: var(--muted); font-size: 12px; text-decoration: none; }
   .skip-link a:hover { color: var(--text); }
+
+  /* Link "Esqueci minha senha" — pequeno, abaixo do input de senha */
+  .forgot-link { text-align: right; margin-top: 6px; }
+  .forgot-link a { color: var(--muted); font-size: 12px; text-decoration: none; }
+  .forgot-link a:hover { color: var(--accent-2); text-decoration: underline; }
+
+  /* Modal de recuperação de senha */
+  .reset-modal {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; animation: fadeIn .2s ease;
+  }
+  .reset-modal[hidden] { display: none; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .reset-modal-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 18px; padding: 32px;
+    width: 100%; max-width: 400px;
+    position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .reset-modal-card h2 {
+    margin: 0 0 8px; font-family: 'Sora', sans-serif;
+    font-size: 20px; font-weight: 800;
+  }
+  .reset-modal-card p {
+    color: var(--muted); font-size: 13px; margin: 0 0 20px; line-height: 1.5;
+  }
+  .reset-modal-close {
+    position: absolute; top: 14px; right: 16px;
+    width: 32px; height: 32px;
+    background: transparent; border: none;
+    color: var(--muted); font-size: 24px; line-height: 1;
+    cursor: pointer; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s;
+  }
+  .reset-modal-close:hover { background: var(--panel-2); color: var(--text); }
 </style>
 </head>
 <body>
@@ -96,6 +134,7 @@
     <div class="field">
       <label for="password">Senha</label>
       <input type="password" id="password" required autocomplete="current-password" minlength="6">
+      <div class="forgot-link"><a href="#" id="forgotLink">Esqueci minha senha</a></div>
     </div>
     <button type="submit" class="submit-btn" id="submitBtn">Entrar</button>
   </form>
@@ -106,6 +145,25 @@
 
   <div class="skip-link">
     <a href="index.html">← Voltar pro estúdio sem login</a>
+  </div>
+</div>
+
+<!-- Modal de recuperação de senha -->
+<div class="reset-modal" id="resetModal" hidden>
+  <div class="reset-modal-card">
+    <button type="button" class="reset-modal-close" id="resetClose" aria-label="Fechar">×</button>
+    <h2>Esqueceu sua senha?</h2>
+    <p>Digita seu e-mail e a gente manda um link pra você criar uma nova.</p>
+
+    <div class="alert" id="resetAlert"></div>
+
+    <form id="resetForm">
+      <div class="field">
+        <label for="resetEmail">E-mail</label>
+        <input type="email" id="resetEmail" required autocomplete="email">
+      </div>
+      <button type="submit" class="submit-btn" id="resetBtn">Enviar link de recuperação</button>
+    </form>
   </div>
 </div>
 
@@ -172,6 +230,57 @@ $('googleBtn').addEventListener('click', async () => {
   } catch (e) {
     showAlert('Erro ao entrar com Google: ' + (e.message || e));
     btn.disabled = false;
+  }
+});
+
+// === Recuperação de senha ===
+const $reset = (id) => document.getElementById(id);
+function showResetAlert(msg, type = 'error') {
+  const a = $reset('resetAlert');
+  a.className = 'alert ' + type;
+  a.textContent = msg;
+}
+
+$('forgotLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  // Pré-preenche com o que tiver no input de login pra economizar digitação
+  $reset('resetEmail').value = $('email').value.trim();
+  $reset('resetAlert').className = 'alert';
+  $reset('resetAlert').textContent = '';
+  $reset('resetModal').hidden = false;
+  setTimeout(() => $reset('resetEmail').focus(), 50);
+});
+
+$('resetClose').addEventListener('click', () => {
+  $reset('resetModal').hidden = true;
+});
+$reset('resetModal').addEventListener('click', (e) => {
+  if (e.target === $reset('resetModal')) $reset('resetModal').hidden = true;
+});
+
+$('resetForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $reset('resetEmail').value.trim();
+  if (!email) return;
+
+  const btn = $reset('resetBtn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  try {
+    const supabase = await waitForSupabase();
+    // URL pra onde o usuário volta depois de clicar no link do e-mail
+    const redirectTo = location.origin + location.pathname.replace(/[^/]+$/, '') + 'reset-senha.html';
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) throw error;
+    showResetAlert('✓ Pronto! Verifica seu e-mail (e a caixa de spam) pra criar a nova senha.', 'success');
+    btn.textContent = 'Enviado';
+  } catch (err) {
+    let msg = err.message || 'Erro ao enviar e-mail';
+    if (msg.includes('rate limit')) msg = 'Muitas tentativas. Espera uns minutos e tenta de novo.';
+    showResetAlert(msg);
+    btn.disabled = false;
+    btn.textContent = 'Enviar link de recuperação';
   }
 });
 

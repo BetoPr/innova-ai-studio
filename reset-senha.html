@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nova senha — Innova & AI Studio</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="shared.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  body { display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .auth-wrap {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 18px; padding: 36px;
+    width: 100%; max-width: 420px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+  }
+  .auth-brand { text-align: center; margin-bottom: 28px; font-family: 'Sora', sans-serif; }
+  .auth-brand .b1 { font-weight: 800; font-size: 22px; letter-spacing: 0.12em; background: linear-gradient(135deg, #ffffff 0%, #b8bfca 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .auth-brand .b-amp { font-weight: 300; font-size: 18px; font-style: italic; color: #6c7589; }
+  .auth-brand .b2 { font-weight: 800; font-size: 22px; letter-spacing: 0.18em; color: #fff; }
+  .auth-brand .tag { margin-top: 8px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 600; }
+  .auth-wrap h1 { margin: 0 0 6px; font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; }
+  .auth-wrap .sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .field input { width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; font-size: 14px; outline: none; transition: border-color .15s; }
+  .field input:focus { border-color: var(--accent-2); background: var(--bg); }
+  .field .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .submit-btn { width: 100%; background: var(--accent); color: var(--bg); border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all .15s; margin-top: 8px; }
+  .submit-btn:hover:not(:disabled) { background: var(--accent-2); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .footer-link { text-align: center; margin-top: 18px; color: var(--muted); font-size: 13px; }
+  .footer-link a { color: var(--accent-2); text-decoration: none; }
+  .footer-link a:hover { color: #fff; }
+  .alert { padding: 11px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 14px; display: none; }
+  .alert.error { background: rgba(255,93,108,0.1); border: 1px solid rgba(255,93,108,0.3); color: #ff8094; display: block; }
+  .alert.success { background: rgba(54,201,138,0.1); border: 1px solid rgba(54,201,138,0.3); color: var(--ok); display: block; }
+  .invalid-token-msg { padding: 16px; background: rgba(255,93,108,0.08); border: 1px solid rgba(255,93,108,0.25); border-radius: 10px; color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 18px; }
+  .invalid-token-msg strong { color: #ff8094; display: block; margin-bottom: 6px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="auth-wrap">
+  <div class="auth-brand">
+    <div>
+      <span class="b1">INNOVA</span> <span class="b-amp">&amp;</span> <span class="b2">AI</span>
+    </div>
+    <div class="tag">Studio</div>
+  </div>
+
+  <h1>Nova senha</h1>
+  <div class="sub">Escolha uma senha nova pra sua conta.</div>
+
+  <div class="alert" id="alert"></div>
+
+  <!-- Mostrado quando o link não tem token válido -->
+  <div class="invalid-token-msg" id="invalidToken" hidden>
+    <strong>Link inválido ou expirado</strong>
+    Esse link de recuperação não é mais válido. Pede um novo na tela de login,
+    clicando em "Esqueci minha senha".
+  </div>
+
+  <form id="resetForm" hidden>
+    <div class="field">
+      <label for="password">Nova senha</label>
+      <input type="password" id="password" required autocomplete="new-password" minlength="6">
+      <div class="hint">Mínimo 6 caracteres.</div>
+    </div>
+    <div class="field">
+      <label for="passwordConfirm">Confirmar nova senha</label>
+      <input type="password" id="passwordConfirm" required autocomplete="new-password" minlength="6">
+    </div>
+    <button type="submit" class="submit-btn" id="submitBtn">Salvar nova senha</button>
+  </form>
+
+  <div class="footer-link">
+    <a href="login.html">← Voltar pro login</a>
+  </div>
+</div>
+
+<script src="favicon.js"></script>
+<script type="module" src="supabase-client.js"></script>
+<script type="module">
+const $ = id => document.getElementById(id);
+const showAlert = (msg, type = 'error') => {
+  const a = $('alert');
+  a.className = 'alert ' + type;
+  a.textContent = msg;
+};
+
+async function waitForSupabase(timeoutMs = 10000) {
+  if (window.supabase) return window.supabase;
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error('Supabase não carregou em 10s.')), timeoutMs);
+    document.addEventListener('supabase-ready', () => { clearTimeout(t); resolve(window.supabase); }, { once: true });
+    if (window.supabase) { clearTimeout(t); resolve(window.supabase); }
+  });
+}
+
+(async () => {
+  const supabase = await waitForSupabase();
+  // O Supabase auto-detecta o access_token do hash URL e cria session temporária.
+  // Se houver session, o link é válido e o usuário pode redefinir.
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    $('resetForm').hidden = false;
+    setTimeout(() => $('password').focus(), 100);
+  } else {
+    $('invalidToken').hidden = false;
+  }
+})();
+
+$('resetForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const password = $('password').value;
+  const confirm = $('passwordConfirm').value;
+
+  if (password.length < 6) {
+    showAlert('A senha precisa ter pelo menos 6 caracteres.');
+    return;
+  }
+  if (password !== confirm) {
+    showAlert('As senhas não batem. Confere se digitou igual nos dois campos.');
+    return;
+  }
+
+  const btn = $('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Salvando…';
+
+  try {
+    const supabase = await waitForSupabase();
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    showAlert('✓ Senha atualizada! Redirecionando pra tela de login…', 'success');
+    // Desloga pra forçar login com a senha nova (boa prática)
+    await supabase.auth.signOut();
+    setTimeout(() => location.href = 'login.html', 1500);
+  } catch (err) {
+    let msg = err.message || 'Erro ao atualizar senha';
+    if (msg.includes('weak')) msg = 'Senha fraca. Use pelo menos 6 caracteres.';
+    if (msg.includes('same_password')) msg = 'Essa é a mesma senha atual. Use uma diferente.';
+    showAlert(msg);
+    btn.disabled = false;
+    btn.textContent = 'Salvar nova senha';
+  }
+});
+
+if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
