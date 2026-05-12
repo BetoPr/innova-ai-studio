@@ -36,6 +36,7 @@
       icon: 'users',
       color: 'pink',
       items: [
+        { href: 'oficial.html', icon: 'badge-check', label: 'Galeria Oficial', badge: 'Novo', i18n: 'sidebar.officialGallery' },
         { href: 'galeria.html', icon: 'layout-grid', label: 'Galeria Pública', i18n: 'sidebar.gallery' },
         { href: 'compartilhar.html', icon: 'plus-circle', label: 'Compartilhar', i18n: 'sidebar.share' },
         { href: 'meus-prompts.html', icon: 'file-text', label: 'Meus prompts', i18n: 'sidebar.myPrompts' },

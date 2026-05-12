@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galeria Oficial — Innova & AI Studio</title>
+<meta name="description" content="Templates oficiais Innova — prompts curados pela plataforma, testados e prontos pra usar no Flow, Midjourney, DALL-E e Imagen.">
+<meta property="og:title" content="Galeria Oficial — Innova & AI Studio">
+<meta property="og:description" content="Prompts oficiais curados pela equipe — funcionam de primeira.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="shared.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  /* Hero da Galeria Oficial — identidade visual diferente da Pública.
+     Selo "Verificado" com ícone badge-check + cor accent forte. */
+  .oficial-hero {
+    text-align: center;
+    padding: 40px 24px 28px;
+  }
+  .oficial-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    color: var(--bg);
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .oficial-badge svg { width: 13px; height: 13px; }
+  .oficial-hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 36px; font-weight: 800;
+    margin: 0 0 8px;
+    background: linear-gradient(135deg, #fff 0%, #b8bfca 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .oficial-hero p {
+    color: var(--muted); font-size: 15px; max-width: 560px; margin: 0 auto;
+    line-height: 1.55;
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar"></aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="search-box">
+      <i data-lucide="search"></i>
+      <input type="text" placeholder="Buscar templates…" id="topSearch">
+      <kbd>Ctrl K</kbd>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" title="Notificações"><i data-lucide="bell"></i></button>
+      <div class="topbar-avatar">A</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="oficial-hero">
+    <span class="oficial-badge">
+      <i data-lucide="badge-check"></i>
+      Oficial · Verificado pela Innova
+    </span>
+    <h1>Templates oficiais</h1>
+    <p>Prompts curados pela equipe Innova — testados e validados. Cola direto no Flow ou no modelo de sua preferência e veja o resultado funcionar de primeira.</p>
+  </section>
+
+  <!-- Stats -->
+  <div class="gal-stats">
+    <div class="gal-stat-card">
+      <span class="gal-stat-label">Templates disponíveis</span>
+      <span class="gal-stat-value" id="statPrompts">—</span>
+    </div>
+    <div class="gal-stat-card">
+      <span class="gal-stat-label">Modelos suportados</span>
+      <span class="gal-stat-value" id="statCreators">—</span>
+    </div>
+    <div class="gal-stat-card">
+      <span class="gal-stat-label">Total de cópias</span>
+      <span class="gal-stat-value" id="statCopies">—</span>
+    </div>
+  </div>
+
+  <!-- Filters (mesmos da galeria pública) -->
+  <div class="gal-filters" id="filterBar">
+    <div class="gal-filter-row">
+      <div class="gal-search">
+        <i data-lucide="search"></i>
+        <input type="text" id="searchInput" placeholder="Buscar por título, tag ou conteúdo…">
+      </div>
+
+      <div class="gal-period" id="periodChips">
+        <button class="gal-chip active" data-period="all">Todo período</button>
+        <button class="gal-chip" data-period="24h">24h</button>
+        <button class="gal-chip" data-period="7d">7d</button>
+        <button class="gal-chip" data-period="30d">30d</button>
+        <button class="gal-chip" data-period="90d">90d</button>
+      </div>
+
+      <label class="gal-toggle">
+        <input type="checkbox" id="proOnly">
+        <span><i data-lucide="lock"></i> Pro</span>
+      </label>
+
+      <select id="sortSel" class="gal-select">
+        <option value="recent">Recente</option>
+        <option value="popular">Popular</option>
+        <option value="copies">Mais copiado</option>
+      </select>
+
+      <button class="gal-clear" id="clearBtn" hidden>
+        <i data-lucide="x"></i> Limpar
+      </button>
+    </div>
+
+    <details class="gal-advanced" id="advFilters">
+      <summary>Filtros avançados</summary>
+      <div class="gal-adv-grid">
+        <div class="gal-adv-block">
+          <label>Estilo</label>
+          <div class="gal-chip-grid" id="categoryChips"></div>
+        </div>
+        <div class="gal-adv-block">
+          <label>Modelo</label>
+          <div class="gal-chip-grid" id="modelChips"></div>
+        </div>
+        <div class="gal-adv-block">
+          <label>Tom</label>
+          <div class="gal-chip-grid" id="toneChips"></div>
+        </div>
+        <div class="gal-adv-block">
+          <label>Idioma</label>
+          <div class="gal-chip-grid" id="langChips"></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Grid -->
+  <div class="gal-grid" id="grid"></div>
+
+  <div class="gal-loader" id="loader" hidden>
+    <span class="gal-spinner"></span> Carregando…
+  </div>
+  <div id="sentinel"></div>
+  <div class="gal-end" id="endMsg" hidden>Você viu todos os templates 🎯</div>
+  <div class="gal-empty" id="emptyMsg" hidden>
+    <i data-lucide="badge-check"></i>
+    <h3>Nenhum template ainda</h3>
+    <p>Estamos preparando uma seleção curada. Volte em breve!</p>
+  </div>
+
+</main>
+
+<!-- Modal: Pro upgrade -->
+<div class="gal-modal-overlay" id="proModal" hidden>
+  <div class="gal-modal">
+    <button class="gal-modal-close" id="proClose"><i data-lucide="x"></i></button>
+    <div class="gal-modal-icon"><i data-lucide="lock"></i></div>
+    <h2>Este template é Pro</h2>
+    <p>Assine o plano Pro por <strong>R$ 39,90/mês</strong> e desbloqueie todos os templates curados, construtor visual completo e histórico ilimitado.</p>
+    <div class="gal-modal-actions">
+      <button class="gal-btn-primary" id="proGoUpgrade">Conhecer o Pro</button>
+      <button class="gal-btn-ghost" id="proCancel">Talvez depois</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toastHost"></div>
+
+<script src="favicon.js"></script>
+<script type="module" src="supabase-client.js"></script>
+<script src="sidebar.js"></script>
+<script type="module" src="lib/galeria.js"></script>
+<script>
+  if (window.lucide) lucide.createIcons();
+
+  // Atalho Ctrl+K
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      document.getElementById('searchInput')?.focus();
+    }
+  });
+</script>
+</body>
+</html>

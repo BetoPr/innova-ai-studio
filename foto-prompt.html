@@ -194,6 +194,37 @@
     text-align: center;
   }
   .f2p-tip a { color: var(--accent-2); text-decoration: underline; }
+
+  /* Alternativa externa: GPT do ChatGPT pra quando a cota acabar */
+  .f2p-alt {
+    margin-top: 28px;
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(54, 201, 138, 0.06) 100%);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+  }
+  .f2p-alt-head {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text); font-size: 14px; font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .f2p-alt-head svg { width: 16px; height: 16px; color: var(--accent-2); }
+  .f2p-alt p {
+    color: var(--muted); font-size: 13px; line-height: 1.55;
+    margin: 0 0 14px;
+  }
+  .f2p-alt p strong { color: var(--text); }
+  .f2p-alt-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 16px;
+    background: var(--text); color: var(--bg);
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px; font-weight: 700;
+    transition: transform .15s, opacity .15s;
+  }
+  .f2p-alt-btn:hover { transform: translateY(-1px); opacity: 0.92; }
+  .f2p-alt-btn svg { width: 14px; height: 14px; }
 </style>
 </head>
 <body>
@@ -292,6 +323,20 @@
       <!-- Tip pra Free -->
       <div class="f2p-tip" id="upgradeTip" hidden>
         💡 No plano Free você tem <strong>15 análises por dia</strong>. Pra usar bem mais (35/dia), <a href="upgrade.html">conheça o Pro</a>.
+      </div>
+
+      <!-- Alternativa externa: ChatGPT GPT customizado público -->
+      <div class="f2p-alt">
+        <div class="f2p-alt-head">
+          <i data-lucide="external-link"></i>
+          <strong>Atingiu o limite ou quer uma alternativa?</strong>
+        </div>
+        <p>
+          Tem um <strong>GPT público no ChatGPT</strong> que faz parecido — manda foto, ele extrai o prompt. Funciona até a sua cota gratuita do ChatGPT acabar.
+        </p>
+        <a class="f2p-alt-btn" href="https://chatgpt.com/g/g-697c0c39a9b48191ab11c240669312fd-extrator-de-prompt-pvi22h" target="_blank" rel="noopener noreferrer">
+          <i data-lucide="external-link"></i> Abrir Extrator de Prompt (ChatGPT)
+        </a>
       </div>
     </div>
 
