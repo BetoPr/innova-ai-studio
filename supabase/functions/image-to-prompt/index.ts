@@ -28,25 +28,34 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-// Instrução pro modelo. Força o formato que o user pediu:
-// prompt corrido em inglês com vírgulas (não bullets, não headings).
-const SYSTEM_PROMPT = `You are an expert AI image-prompt engineer for tools like Google Flow, Midjourney, DALL-E, Imagen.
+// Instrução pro modelo. Força o formato corrido em inglês com vírgulas,
+// e força análise DETALHADA: roupa, objetos, cenário, fundo, pose, etc.
+// Quanto mais específico o prompt, mais fiel o resultado no Flow/Midjourney.
+const SYSTEM_PROMPT = `You are an EXPERT AI image-prompt engineer for tools like Google Flow, Midjourney, DALL-E, Imagen. Your goal is to extract MAXIMUM detail from photos and convert into precise generation prompts.
 
-The user will send a photo. Your job is to:
-1. Analyze the image carefully (subject, scene, lighting, composition, style, mood, camera angle)
-2. Generate a prompt in ENGLISH that recreates similar images
-3. Format the prompt as ONE FLOWING LINE separated by commas (NO bullet points, NO headings, NO line breaks inside the prompt)
-4. Provide a short Portuguese description for the human user
+When the user sends a photo, analyze it METHODICALLY across these dimensions. DO NOT skip any:
+
+1. **SUBJECT** — gender, approximate age, ethnicity, body type, skin tone, expression, gaze direction.
+2. **HAIR** — color, length, texture (straight/wavy/curly/braided), style (loose/tied/bun/ponytail), accessories (clips, scarf, hat).
+3. **CLOTHING** — every visible piece: top, bottom, outerwear, footwear. Include color, fabric/material (silk/leather/denim/cotton/lace), pattern (solid/striped/floral/embroidered), cut/fit (oversized/fitted/cropped), and any details (buttons, zippers, prints).
+4. **ACCESSORIES & OBJECTS HELD** — jewelry, watches, glasses, bags, phones, cups, anything in hand or on body. Specify materials.
+5. **POSE & BODY POSITION** — sitting/standing/leaning/crouching, hand placement, head tilt, body angle relative to camera (frontal/3-4/profile/back), feet position.
+6. **SCENE & LOCATION** — indoor or outdoor, type of space (studio/bedroom/cafe/street/beach), architectural style if visible.
+7. **BACKGROUND** — what's behind the subject: walls, props, plants, furniture, blur level (bokeh), depth.
+8. **LIGHTING** — direction (front/side/back/top), quality (soft/hard), color temperature (warm/cool/neutral), source (natural window light, golden hour sun, studio softbox, candlelight, neon).
+9. **CAMERA & LENS** — apparent focal length (24mm wide / 50mm natural / 85mm portrait / 135mm tele), framing (close-up/medium/wide), angle (eye-level/low/high), depth of field.
+10. **MOOD & STYLE** — editorial / cinematic / lifestyle / fashion / documentary / dreamy / moody / vintage / minimalist / luxurious.
+11. **COLOR PALETTE** — dominant colors, contrast level (high/low), overall tone (muted/saturated/desaturated).
 
 Return ONLY a JSON in this exact format, nothing else:
 {
-  "description_pt": "Descrição em português, 2-3 frases curtas.",
-  "prompt_en": "comma-separated english prompt, all one line, no headings, no bullets, vivid and specific"
+  "description_pt": "Descrição em português, 3-4 frases descrevendo o que tem na foto. Mencione roupa, pose, cenário, objetos e clima geral.",
+  "prompt_en": "comma-separated english prompt, all one line, no headings, no bullets, EXTREMELY DETAILED covering every dimension above"
 }
 
-The English prompt MUST include: subject (gender/age/pose), clothing details, scene/location, lighting type, camera/lens style, mood, composition. Be specific and vivid but concise (60-120 words max).
+The English prompt MUST be ONE FLOWING LINE separated by commas. It should be 100-180 words long, ultra-specific, including every detail listed above. Order: subject → hair → clothing → accessories/objects → pose → location → background → lighting → camera/lens → mood/style → color palette → quality modifiers (e.g., "8k, photorealistic, sharp focus").
 
-NEVER include markdown formatting, code blocks, or extra text outside the JSON.`;
+NEVER include markdown formatting, code blocks, headings, line breaks inside the prompt, or extra text outside the JSON.`;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -124,8 +133,8 @@ serve(async (req) => {
           },
         ],
         response_format: { type: 'json_object' },
-        temperature: 0.7,
-        max_tokens: 800,
+        temperature: 0.6,
+        max_tokens: 1500,
       }),
     });
 
