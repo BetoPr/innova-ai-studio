@@ -382,6 +382,7 @@ body.sidebar-collapsed { --sidebar-w: 70px; }
   padding: 10px 20px; cursor: pointer;
   background: none; border: none; width: 100%;
   text-align: left; color: var(--text);
+  text-decoration: none;
   font-size: 13px; transition: background .15s;
 }
 .sidebar-footer .footer-item:hover { background: var(--panel-2); }
